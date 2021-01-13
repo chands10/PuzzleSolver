@@ -129,20 +129,21 @@ def checkConstraintSquare(board, constraints, i, j):
         if board[i][k] != 0:
             del r["left"]
             break     
-        
-    # just check if we are at the edge for bottom/right
-    # since this is the only way we can check a bottom/right constraint
-    # for a square if a row/col is not completely filled
-    # (bc of order we are iterating)
+      
+    # for bottom/right  
+    # must wait until row/col is filled to check this constraint
+    # since we are iterating from top left to bottom right row by row
     
     # bottom
-    if i != board.shape[0] - 1:
+    col = board.T[j]
+    if len(col[col > 0]) != 4:
         del r["bottom"]
-            
+
     # right
-    if j != board.shape[1] - 1:
+    row = board[i]
+    if len(row[row > 0]) != 4:
         del r["right"]
-            
+                    
     return checkConstraints(board, constraints, r)    
 
 # used for connectedness property in isSolved
@@ -219,10 +220,18 @@ def isValidSquare(board, constraints, i, j):
     if not checkQuantity(board, f, [board[i][j]]):
         return False
     
-    if not checkRow(board[i], f):
+    row = board[i]
+    if not checkRow(row, f):
         return False
     
-    if not checkRow(board.T[j], f):
+    if j == 6 and len(row[row > 0]) != 4: # must have four numbers at edge
+        return False
+    
+    col = board.T[j]
+    if not checkRow(col, f):
+        return False
+    
+    if i == 6 and len(col[col > 0]) != 4: # must have four numbers at edge
         return False
     
     if not check2x2Square(board, i, j):
@@ -246,6 +255,7 @@ def solveBoard(board, constraints, given, visited, flipped):
     
     l = len(board[board > 0])
     if l == 28 and isSolved(board, constraints):
+        print("Iterations: {}".format(len(visited)))
         return True                
     if l >= 28:
         return False
@@ -263,11 +273,7 @@ def solveBoard(board, constraints, given, visited, flipped):
         if i > 0:
             if not checkRow(board[i - 1], lambda x, y: x == y):
                 return False
-            
-            r = {"left": [i - 1], "right": [i - 1]}
-            if not checkConstraints(board, constraints, r):
-                return False
-            
+                        
         # check connectedness property for row i - 2
         # by checking if each element in row i - 2 can reach an element
         # in row i - 1, since row i - 1 is the last completed row
