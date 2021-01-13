@@ -117,6 +117,7 @@ def checkConstraintSquare(board, constraints, i, j):
     
     # top and left work differently since we are iterating from top left to bottom right by row
     # check if this is the first number a constraint sees for top/left
+    
     # top
     for k in range(i - 1, -1, -1):
         if board[k][j] != 0:
@@ -129,7 +130,11 @@ def checkConstraintSquare(board, constraints, i, j):
             del r["left"]
             break     
         
-    # check if we are at the edge for bottom/left
+    # just check if we are at the edge for bottom/right
+    # since this is the only way we can check a bottom/right constraint
+    # for a square if a row/col is not completely filled
+    # (bc of order we are iterating)
+    
     # bottom
     if i != board.shape[0] - 1:
         del r["bottom"]
