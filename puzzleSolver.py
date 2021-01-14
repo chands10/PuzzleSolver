@@ -245,6 +245,19 @@ def isValidSquare(board, constraints, i, j):
     col = board.T[j]
     if not checkRow(col):
         return False    
+                
+    if not check2x2Square(board, i, j):
+        return False
+    
+    if not checkConstraintSquare(board, constraints, i, j):
+        return False   
+    
+    return True 
+
+# check if board can ever be valid at this point going forward
+def canContinue(board, i, j):
+    row = board[i]    
+    col = board.T[j]
             
     # must have filled in at least 4 - k numbers by this point of row/col
     posRow = len(row[row > 0])
@@ -255,14 +268,8 @@ def isValidSquare(board, constraints, i, j):
         
         if i == 6 - k and posCol < 4 - k:
             return False    
-    
-    if not check2x2Square(board, i, j):
-        return False
-    
-    if not checkConstraintSquare(board, constraints, i, j):
-        return False   
-    
-    return True        
+            
+    return True
 
 # recursive function to solve board
 def solveBoard(board, constraints, given, visited, flipped):        
@@ -311,6 +318,12 @@ def solveBoard(board, constraints, given, visited, flipped):
             if board[i][j] < 7 and (i,j) not in given:
                 og = board[i][j]
                 board[i][j] += 1
+                
+                # see if you can continue with a posNum
+                if og == 0 and not canContinue(board, i, j):
+                    board[i][j] = og
+                    return False   
+                
                 while board[i][j] <= 7 and not isValidSquare(board, constraints, i, j):
                     board[i][j] += 1
                 if board[i][j] == 8:
@@ -319,6 +332,10 @@ def solveBoard(board, constraints, given, visited, flipped):
                     if solveBoard(board, constraints, given, visited, flipped):
                         return True
                     board[i][j] = og
+                
+                # see if you can continue with 0
+                if og == 0 and not canContinue(board, i, j):
+                    return False
    
                         
     return False
