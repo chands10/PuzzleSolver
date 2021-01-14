@@ -310,8 +310,15 @@ def solveBoard(board, constraints, given, visited, flipped):
                     return False
         
         for j in range(board.shape[1]):
+            og = board[i][j]
+            
+            # check if this is a square that has not been incremented yet
+            if og == 0 or (i,j) in given:
+                # see if you can continue with this board based off the sum
+                if not checkRow(board[i]) or not checkRow(board.T[j]):
+                    return False
+                
             if board[i][j] < 7 and (i,j) not in given:
-                og = board[i][j]
                 board[i][j] += 1
                 
                 # see if you can continue with a posNum
