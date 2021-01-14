@@ -14,26 +14,35 @@ def checkQuantity(board, f, r=range(1, 8)):
     
     return True
         
-# f is == or <=
 # check sum of row and number of positive numbers in row
-def checkRow(row, f):
-    if len(row[row > 0]) == 4:
-        return sum(row) == 20
+def checkRow(row, exact = False):
+    l = len(row[row > 0])
+    s = sum(row)
     
-    return f(sum(row), 20) and f(len(row[row > 0]), 4)
+    if l > 4 or s > 20:
+        return False
+    elif l == 4 or exact:
+        return s == 20 and l == 4
+    elif l == 3: 
+        # if sum less than 13 then would be impossible to sum to 20 with four numbers since 7 is the highest number
+        return s >= 20 - 7 
+    elif l == 2:
+        return s >= 20 - 7 * 2
+    
+    return True
 
 #call check row on every row/col (used in isSolved)
-def checkLines(board, f):
+def checkLines(board):
+    exact = True # sum of row must equal 20 with 4 numbers
+    
     for row in board:
-        if not checkRow(row, f):
-            #print("Invalid row {}".format(row))
+        if not checkRow(row, exact):
             return False
         
     transpose = board.T    
 
     for col in transpose:
-        if not checkRow(col, f):
-            #print("Invalid col {}".format(col))
+        if not checkRow(col, exact):
             return False
         
     return True
@@ -188,7 +197,7 @@ def isSolved(board, constraints):
     if not checkQuantity(board, f):
         return False
     
-    if not checkLines(board, f):
+    if not checkLines(board):
         return False
         
     # connected region
@@ -221,18 +230,22 @@ def isValidSquare(board, constraints, i, j):
         return False
     
     row = board[i]
-    if not checkRow(row, f):
-        return False
-    
-    if j == 6 and len(row[row > 0]) != 4: # must have four numbers at edge
+    if not checkRow(row):
         return False
     
     col = board.T[j]
-    if not checkRow(col, f):
-        return False
-    
-    if i == 6 and len(col[col > 0]) != 4: # must have four numbers at edge
-        return False
+    if not checkRow(col):
+        return False    
+            
+    # must have filled in at least 4 - k numbers by this point of row/col
+    posRow = len(row[row > 0])
+    posCol = len(col[col > 0])
+    for k in range(4): 
+        if j == 6 - k and posRow < 4 - k:
+            return False
+        
+        if i == 6 - k and posCol < 4 - k:
+            return False    
     
     if not check2x2Square(board, i, j):
         return False
@@ -271,7 +284,7 @@ def solveBoard(board, constraints, given, visited, flipped):
     for i in range(board.shape[0]):
         # check if previous row is valid
         if i > 0:
-            if not checkRow(board[i - 1], lambda x, y: x == y):
+            if not checkRow(board[i - 1], True):
                 return False
                         
         # check connectedness property for row i - 2
