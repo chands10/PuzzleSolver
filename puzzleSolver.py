@@ -312,6 +312,10 @@ def solveBoard(board, constraints, given, visited, flipped):
         for j in range(board.shape[1]):
             og = board[i][j]
             
+            # make sure constraints still hold at given number
+            if (i, j) in given and not checkConstraintSquare(board, constraints, i, j):
+                return False
+            
             # check if this is a square that has not been incremented yet
             if og == 0 or (i,j) in given:
                 # see if you can continue with this board based off the sum
