@@ -315,6 +315,7 @@ def solveBoard(board, constraints, given, visited, flipped):
             # check if this is a square that has not been incremented yet
             if og == 0 or (i,j) in given:
                 # see if you can continue with this board based off the sum
+                # of the current row (board[i]) and current col (board.T[j])
                 if not checkRow(board[i]) or not checkRow(board.T[j]):
                     return False
                 
