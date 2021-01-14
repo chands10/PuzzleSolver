@@ -256,8 +256,8 @@ def isValidSquare(board, constraints, i, j):
 
 # check if board can ever be valid at this point going forward
 def canContinue(board, i, j):
-    row = board[i]    
-    col = board.T[j]
+    row = board[i][:j + 1]
+    col = board.T[j][:i + 1]
             
     # must have filled in at least 4 - k numbers by this point of row/col
     posRow = len(row[row > 0])
@@ -297,12 +297,7 @@ def solveBoard(board, constraints, given, visited, flipped):
             else:
                 print(board)
         
-    for i in range(board.shape[0]):
-        # check if previous row is valid
-        if i > 0:
-            if not checkRow(board[i - 1], True):
-                return False
-                        
+    for i in range(board.shape[0]):                        
         # check connectedness property for row i - 2
         # by checking if each element in row i - 2 can reach an element
         # in row i - 1, since row i - 1 is the last completed row
