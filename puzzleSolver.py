@@ -329,13 +329,12 @@ def solveBoard(board, constraints, given, visited, flipped):
                 
                 while board[i][j] <= 7 and not isValidSquare(board, constraints, i, j):
                     board[i][j] += 1
-                if board[i][j] == 8:
-                    board[i][j] = og
-                else:
+                    
+                if board[i][j] <= 7:
                     if solveBoard(board, constraints, given, visited, flipped):
                         return True
-                    board[i][j] = og
                 
+                board[i][j] = og
                 # see if you can continue with 0
                 if og == 0 and not canContinue(board, i, j):
                     return False
