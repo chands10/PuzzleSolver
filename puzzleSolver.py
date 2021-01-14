@@ -173,22 +173,31 @@ def dfs(board, i, j, visited):
 
 # check that an element can reach the last row fully traversed
 # using a modified dfs
-def connected(board, i, j, visited):
+# called once for each positive element in a row with the same visited array
+# visited array may contain less rows than board,
+# the last row of the visited array represents the last row fully traversed
+def connected(board, i, j, visited, distinct):
     if not validPoint(board, i, j):
         return False
     
-    if visited[i][j] == 1 or board[i][j] == 0:
+    # traversed this square before or this square is invalid
+    if visited[i][j] == distinct or board[i][j] == 0:
         return False
+    
+    # reached a path from a previous element in the same original row that is connected
+    if visited[i][j] > 0:
+        return True
     
     if i == visited.shape[0] - 1: # last row fully traversed
         return True
     
-    visited[i][j] = 1
+    # mark visited with specific positive value for each element in row
+    visited[i][j] = distinct
     
-    return connected(board, i + 1, j, visited) or \
-           connected(board, i - 1, j, visited) or \
-           connected(board, i, j + 1, visited) or \
-           connected(board, i, j - 1, visited)
+    return connected(board, i + 1, j, visited, distinct) or \
+           connected(board, i - 1, j, visited, distinct) or \
+           connected(board, i, j + 1, visited, distinct) or \
+           connected(board, i, j - 1, visited, distinct)
 
 # check if the board is solved
 def isSolved(board, constraints):    
@@ -293,9 +302,9 @@ def solveBoard(board, constraints, given, visited, flipped):
         # (then eventually an element in row i - 1 can connect with an 
         # element in row i)
         if i > 1:
+            visited2 = np.zeros((i, board.shape[1])) # rows 0 to i - 1
             for j in range(board.shape[1]):
-                v = np.zeros((i, board.shape[1]))
-                if board[i - 2][j] > 0 and not connected(board, i - 2, j, v):
+                if board[i - 2][j] > 0 and not connected(board, i - 2, j, visited2, j + 1):
                     return False
         
         for j in range(board.shape[1]):
