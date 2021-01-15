@@ -272,44 +272,41 @@ def canContinue(board, i, j):
     return True
 
 # recursive function to solve board
-def solveBoard(board, constraints, given, visited, flipped):        
+def solveBoard(board, constraints, given, iterations, flipped, rowIndex, colIndex):        
     #print(board)
     #input()
-    
-    t = tuple(tuple(row) for row in board)
-    if t in visited:
-        return False
-    
-    visited.add(t)
+        
+    # iterations acts as a pointer
+    iterations[0] += 1
     
     l = len(board[board > 0])
     if l == 28 and isSolved(board, constraints):
-        print("Iterations: {}".format(len(visited)))
+        print("Iterations: {}".format(iterations[0]))
         return True                
     if l >= 28:
         return False
     
-    if len(visited) % 1000 == 0:
-        print(len(visited))
+    if iterations[0] % 1000 == 0:
+        print(iterations[0])
         if 0:
             if flipped:
                 print(board[::-1])
             else:
                 print(board)
         
-    for i in range(board.shape[0]):                        
+    for i in range(rowIndex, board.shape[0]):                        
         # check connectedness property for row i - 2
         # by checking if each element in row i - 2 can reach an element
         # in row i - 1, since row i - 1 is the last completed row
         # (then eventually an element in row i - 1 can connect with an 
         # element in row i)
         if i > 1:
-            visited2 = np.zeros((i, board.shape[1])) # rows 0 to i - 1
+            visited = np.zeros((i, board.shape[1])) # rows 0 to i - 1
             for j in range(board.shape[1]):
-                if board[i - 2][j] > 0 and not connected(board, i - 2, j, visited2, j + 1):
+                if board[i - 2][j] > 0 and not connected(board, i - 2, j, visited, j + 1):
                     return False
         
-        for j in range(board.shape[1]):
+        for j in range(colIndex, board.shape[1]):
             og = board[i][j]
             
             # make sure constraints still hold at given number
@@ -335,13 +332,15 @@ def solveBoard(board, constraints, given, visited, flipped):
                     board[i][j] += 1
                     
                 if board[i][j] <= 7:
-                    if solveBoard(board, constraints, given, visited, flipped):
+                    if solveBoard(board, constraints, given, iterations, flipped, i, j):
                         return True
                 
                 board[i][j] = og
                 # see if you can continue with 0
                 if og == 0 and not canContinue(board, i, j):
                     return False
+        
+        colIndex = 0
    
                         
     return False
@@ -429,7 +428,7 @@ if __name__ == "__main__":
                 given.add((i,j))
                 
     t = time.time()
-    solved = solveBoard(board, constraints, given, set(), flipped)
+    solved = solveBoard(board, constraints, given, [0], flipped, 0, 0)
     t = time.time() - t
     
     if flipped:
