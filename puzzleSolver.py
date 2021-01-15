@@ -312,13 +312,6 @@ def solveBoard(board, constraints, given, iterations, flipped, rowIndex, colInde
             # make sure constraints still hold at given number
             if (i, j) in given and not checkConstraintSquare(board, constraints, i, j):
                 return False
-            
-            # check if this is a square that has not been incremented yet
-            if og == 0 or (i,j) in given:
-                # see if you can continue with this board based off the sum
-                # of the current row (board[i]) and current col (board.T[j])
-                if not checkRow(board[i]) or not checkRow(board.T[j]):
-                    return False
                 
             if board[i][j] < 7 and (i,j) not in given:
                 board[i][j] += 1
@@ -341,7 +334,6 @@ def solveBoard(board, constraints, given, iterations, flipped, rowIndex, colInde
                     return False
         
         colIndex = 0
-   
                         
     return False
 
