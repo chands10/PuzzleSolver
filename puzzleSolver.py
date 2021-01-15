@@ -5,7 +5,7 @@ import time
 def validPoint(board, i, j):
     return 0 <= i < board.shape[0] and 0 <= j < board.shape[1]
 
-# f is == or <=
+# f is ==, <, or <=
 # 1 1, 2 2s...7 7s by default, customizable in r
 def checkQuantity(board, f, r=range(1, 8)):
     for i in r:
@@ -25,7 +25,8 @@ def checkRow(row, exact = False):
         return s == 20 and l == 4
     elif l == 3: 
         # if sum less than 13 then would be impossible to sum to 20 with four numbers since 7 is the highest number
-        return s >= 20 - 7 
+        # sum cannot be 20 with three numbers
+        return 20 - 7 <= s < 20
     elif l == 2:
         return s >= 20 - 7 * 2
     
@@ -244,8 +245,20 @@ def isValidSquare(board, constraints, i, j):
     
     col = board.T[j]
     if not checkRow(col):
-        return False    
-                
+        return False
+    
+    posRow = row[row > 0]
+    posCol = col[col > 0]
+    f = lambda x, y: x < y
+    
+    # if 3 numbers are filled in then we can find the final number in the line (20 - sum(line))
+    # make sure there is enough quantity to fill in the final number
+    if len(posRow) == 3 and not checkQuantity(board, f, [20 - sum(posRow)]):
+        return False
+    
+    if len(posCol) == 3 and not checkQuantity(board, f, [20 - sum(posCol)]):
+        return False
+
     if not check2x2Square(board, i, j):
         return False
     
@@ -256,17 +269,18 @@ def isValidSquare(board, constraints, i, j):
 
 # check if board can ever be valid at this point going forward
 def canContinue(board, i, j):
+    # get the line values up to i, j inclusive
     row = board[i][:j + 1]
     col = board.T[j][:i + 1]
             
     # must have filled in at least 4 - k numbers by this point of row/col
-    posRow = len(row[row > 0])
-    posCol = len(col[col > 0])
+    posRowCount = len(row[row > 0])
+    posColCount = len(col[col > 0])
     for k in range(4): 
-        if j == 6 - k and posRow < 4 - k:
+        if j == 6 - k and posRowCount < 4 - k:
             return False
         
-        if i == 6 - k and posCol < 4 - k:
+        if i == 6 - k and posColCount < 4 - k:
             return False    
             
     return True
