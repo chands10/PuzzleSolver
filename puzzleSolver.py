@@ -309,12 +309,15 @@ def solveBoard(board, constraints, given, iterations, flipped, rowIndex, colInde
                 print(board)
         
     for i in range(rowIndex, board.shape[0]):                        
-        # check connectedness property for row i - 2
-        # by checking if each element in row i - 2 can reach an element
-        # in row i - 1, since row i - 1 is the last completed row
-        # (then eventually an element in row i - 1 can connect with an 
-        # element in row i)
-        if i > 1:
+        # check if this is the first time visiting a row for this
+        # specific board by checking if we are at the first column
+        # and we are at a square that has not been modified yet
+        if i > 1 and colIndex == 0 and (board[i][0] == 0 or (i, 0) in given):
+            # check connectedness property for row i - 2
+            # by checking if each element in row i - 2 can reach an element
+            # in row i - 1, since row i - 1 is the last completed row
+            # (then eventually an element in row i - 1 can connect with an
+            # element in row i)
             visited = np.zeros((i, board.shape[1])) # rows 0 to i - 1
             for j in range(board.shape[1]):
                 if board[i - 2][j] > 0 and not connected(board, i - 2, j, visited, j + 1):
