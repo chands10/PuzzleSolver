@@ -1,3 +1,4 @@
+from collections import Counter
 import numpy as np
 import time
 
@@ -7,9 +8,9 @@ def validPoint(board, i, j):
 
 # f is ==, <, or <=
 # 1 1, 2 2s...7 7s by default, customizable in r
-def checkQuantity(board, f, r=range(1, 8)):
+def checkQuantity(board, quantities, f, r=range(1, 8)):
     for i in r:
-        if not f(len(board[board == i]), i):
+        if not f(quantities[i], i):
             return False
     
     return True
@@ -157,19 +158,19 @@ def checkConstraintSquare(board, constraints, i, j):
     return checkConstraints(board, constraints, r)    
 
 # used for connectedness property in isSolved
-# updates visited array
+# returns num squares visited and updates visited array
 def dfs(board, i, j, visited):
     if not validPoint(board, i, j):
-        return
+        return 0
     
     if visited[i][j] == 1 or board[i][j] == 0:
-        return
+        return 0
     
     visited[i][j] = 1
     
-    dfs(board, i + 1, j, visited)
-    dfs(board, i - 1, j, visited)
-    dfs(board, i, j + 1, visited)
+    return 1 + dfs(board, i + 1, j, visited) + \
+    dfs(board, i - 1, j, visited) + \
+    dfs(board, i, j + 1, visited) + \
     dfs(board, i, j - 1, visited)
 
 # check that an element can reach the last row fully traversed
@@ -201,10 +202,10 @@ def connected(board, i, j, visited, distinct):
            connected(board, i, j - 1, visited, distinct)
 
 # check if the board is solved
-def isSolved(board, constraints):    
+def isSolved(board, quantities, constraints, l):    
     f = lambda x, y: x == y
     
-    if not checkQuantity(board, f):
+    if not checkQuantity(board, quantities, f):
         return False
     
     if not checkLines(board):
@@ -218,9 +219,9 @@ def isSolved(board, constraints):
                 break   
             
     visited = np.zeros_like(board)
-    dfs(board, root[0], root[1], visited)
+    numVisited = dfs(board, root[0], root[1], visited)
 
-    if not (len(visited[visited > 0]) == len(board[board > 0]) == 28):
+    if not (numVisited == l == 28):
         return False
         
     if not check2x2(board):
@@ -233,10 +234,10 @@ def isSolved(board, constraints):
 
 
 # check if a position is valid
-def isValidSquare(board, constraints, i, j):
+def isValidSquare(board, constraints, quantities, i, j):
     f = lambda x, y: x <= y
     
-    if not checkQuantity(board, f, [board[i][j]]):
+    if not checkQuantity(board, quantities, f, [board[i][j]]):
         return False
     
     row = board[i]
@@ -253,10 +254,10 @@ def isValidSquare(board, constraints, i, j):
     
     # if 3 numbers are filled in then we can find the final number in the line (20 - sum(line))
     # make sure there is enough quantity to fill in the final number
-    if len(posRow) == 3 and not checkQuantity(board, f, [20 - sum(posRow)]):
+    if len(posRow) == 3 and not checkQuantity(board, quantities, f, [20 - sum(posRow)]):
         return False
     
-    if len(posCol) == 3 and not checkQuantity(board, f, [20 - sum(posCol)]):
+    if len(posCol) == 3 and not checkQuantity(board, quantities, f, [20 - sum(posCol)]):
         return False
 
     if not check2x2Square(board, i, j):
@@ -286,15 +287,14 @@ def canContinue(board, i, j):
     return True
 
 # recursive function to solve board
-def solveBoard(board, constraints, given, iterations, flipped, rowIndex, colIndex):        
+def solveBoard(board, constraints, given, quantities, iterations, flipped, rowIndex, colIndex, l):        
     #print(board)
     #input()
         
     # iterations acts as a pointer
     iterations[0] += 1
     
-    l = len(board[board > 0])
-    if l == 28 and isSolved(board, constraints):
+    if l == 28 and isSolved(board, quantities, constraints, l):
         print("Iterations: {}".format(iterations[0]))
         return True                
     if l >= 28:
@@ -336,19 +336,29 @@ def solveBoard(board, constraints, given, iterations, flipped, rowIndex, colInde
                 # see if you can continue with a posNum
                 if og == 0 and not canContinue(board, i, j):
                     board[i][j] = og
-                    return False   
+                    return False
+                elif og == 0:
+                    l += 1
                 
-                while board[i][j] <= 7 and not isValidSquare(board, constraints, i, j):
+                quantities[og] -= 1
+                quantities[board[i][j]] += 1
+                while board[i][j] <= 7 and not isValidSquare(board, constraints, quantities, i, j):
+                    quantities[board[i][j]] -= 1
                     board[i][j] += 1
+                    quantities[board[i][j]] += 1
                     
                 if board[i][j] <= 7:
-                    if solveBoard(board, constraints, given, iterations, flipped, i, j):
+                    if solveBoard(board, constraints, given, quantities, iterations, flipped, i, j, l):
                         return True
-                
+
+                quantities[board[i][j]] -= 1                
                 board[i][j] = og
+                quantities[og] += 1
                 # see if you can continue with 0
                 if og == 0 and not canContinue(board, i, j):
                     return False
+                elif og == 0:
+                    l -= 1
         
         colIndex = 0
                         
@@ -431,13 +441,15 @@ if __name__ == "__main__":
         print("Using flipped algorithm to go faster")    
         
     given = set()
+    quantities = Counter()
     for i in range(board.shape[0]):
         for j in range(board.shape[1]):
             if board[i][j] > 0:
                 given.add((i,j))
+                quantities[board[i][j]] += 1
                 
     t = time.time()
-    solved = solveBoard(board, constraints, given, [0], flipped, 0, 0)
+    solved = solveBoard(board, constraints, given, quantities, [0], flipped, 0, 0, len(given))
     t = time.time() - t
     
     if flipped:
