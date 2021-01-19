@@ -2,376 +2,420 @@ from collections import Counter
 import numpy as np
 import time
 
-# i, j in bounds of board
-def validPoint(board, i, j):
-    return 0 <= i < board.shape[0] and 0 <= j < board.shape[1]
+class Solver(object):
+    def __init__(self, board, constraints):
+        self.board = board
+        self.constraints = constraints
+        self.given = set() # indices of given numbers
+        self.quantities = Counter() # frequency of each number
+        self.iterations = 0 # num iterations to solve board
+        self.flipped = False # whether board is flipped or not
+        self.numPos = 0 # number of positive numbers on board
 
-# f is ==, <, or <=
-# 1 1, 2 2s...7 7s by default, customizable in r
-def checkQuantity(board, quantities, f, r=range(1, 8)):
-    for i in r:
-        if not f(quantities[i], i):
-            return False
+    # i, j in bounds of board
+    def validPoint(self, i, j):
+        return 0 <= i < self.board.shape[0] and 0 <= j < self.board.shape[1]
     
-    return True
+    # f is ==, <, or <=
+    # 1 1, 2 2s...7 7s by default, customizable in r
+    def checkQuantity(self, f, r=range(1, 8)):
+        for i in r:
+            if not f(self.quantities[i], i):
+                return False
         
-# check sum of row and number of positive numbers in row
-def checkRow(row, exact = False):
-    l = len(row[row > 0])
-    s = sum(row)
-    
-    if l > 4 or s > 20:
-        return False
-    elif l == 4 or exact:
-        return s == 20 and l == 4
-    elif l == 3: 
-        # if sum less than 13 then would be impossible to sum to 20 with four numbers since 7 is the highest number
-        # sum cannot be 20 with three numbers
-        return 20 - 7 <= s < 20
-    elif l == 2:
-        return s >= 20 - 7 * 2
-    
-    return True
-
-#call check row on every row/col (used in isSolved)
-def checkLines(board):
-    exact = True # sum of row must equal 20 with 4 numbers
-    
-    for row in board:
-        if not checkRow(row, exact):
-            return False
+        return True
+            
+    # check sum of row and number of positive numbers in row
+    def checkRow(self, row, exact = False):
+        l = len(row[row > 0])
+        s = sum(row)
         
-    transpose = board.T    
-
-    for col in transpose:
-        if not checkRow(col, exact):
+        if l > 4 or s > 20:
             return False
+        elif l == 4 or exact:
+            return s == 20 and l == 4
+        elif l == 3: 
+            # if sum less than 13 then would be impossible to sum to 20 with four numbers since 7 is the highest number
+            # sum cannot be 20 with three numbers
+            return 20 - 7 <= s < 20
+        elif l == 2:
+            return s >= 20 - 7 * 2
         
-    return True
-
-# check the whole board for 2x2s (used in isSolved)
-# return True if valid board
-def check2x2(board):
-    for i in range(board.shape[0] - 1):
-        for j in range(board.shape[1] - 1):
-            if board[i][j] != 0 and board[i][j + 1] != 0 \
-               and board[i + 1][j] != 0 and board[i + 1][j + 1] != 0:
+        return True
+    
+    #call check row on every row/col (used in isSolved)
+    def checkLines(self):
+        exact = True # sum of row must equal 20 with 4 numbers
+        
+        for row in self.board:
+            if not self.checkRow(row, exact):
                 return False
             
-    return True
-
-# check one square for 2x2s
-# return True if valid board
-def check2x2Square(board, i, j):    
-    #left
-    if posNum(board, i, j - 1):        
-        # top left
-        if posNum(board, i - 1, j) and posNum(board, i - 1, j - 1):
-            return False
-        
-        #bottom left
-        if posNum(board, i + 1, j) and posNum(board, i + 1, j - 1):
-            return False
+        transpose = self.board.T    
     
-    # right
-    if posNum(board, i, j + 1):
-        # top right
-        if posNum(board, i - 1, j) and posNum(board, i - 1, j + 1):
-            return False
-        
-        # bottom right
-        if posNum(board, i + 1, j) and posNum(board, i + 1, j + 1):
-            return False
+        for col in transpose:
+            if not self.checkRow(col, exact):
+                return False
+            
+        return True
     
-    return True
-
-# check if the current position contains a number > 0
-def posNum(board, i, j):
-    if not validPoint(board, i, j):
-        return False
-    return board[i][j] > 0
-
-# check if the constraint at a certain row is met (helper function)
-def validConstraint(row, num, first):
-    if first:
-        val = 0
-    else:
-        val = -1
-        
-    return row[row > 0][val] == num
-
-# check constraints in dictionary r (defaults to all constraints)
-def checkConstraints(board, constraints, r={d:[i for i in range(7)] for d in ["top", "left", "bottom", "right"]}):
-    transpose = board.T    
+    # check the whole board for 2x2s (used in isSolved)
+    # return True if valid board
+    def check2x2(self):
+        for i in range(self.board.shape[0] - 1):
+            for j in range(self.board.shape[1] - 1):
+                if self.board[i][j] != 0 and self.board[i][j + 1] != 0 \
+                   and self.board[i + 1][j] != 0 and self.board[i + 1][j + 1] != 0:
+                    return False
+                
+        return True
     
-    # d = top, left, bottom, right
-    for d in r:
-        current = constraints[d]
-        first = (d == "top" or d == "left")
-        if d == "top" or d == "bottom":
-            currentBoard = transpose
+    # check one square for 2x2s
+    # return True if valid board
+    def check2x2Square(self, i, j):    
+        #left
+        if self.posNum(i, j - 1):        
+            # top left
+            if self.posNum(i - 1, j) and self.posNum(i - 1, j - 1):
+                return False
+            
+            #bottom left
+            if self.posNum(i + 1, j) and self.posNum(i + 1, j - 1):
+                return False
+        
+        # right
+        if self.posNum(i, j + 1):
+            # top right
+            if self.posNum(i - 1, j) and self.posNum(i - 1, j + 1):
+                return False
+            
+            # bottom right
+            if self.posNum(i + 1, j) and self.posNum(i + 1, j + 1):
+                return False
+        
+        return True
+    
+    # check if the current position contains a number > 0
+    def posNum(self, i, j):
+        if not self.validPoint(i, j):
+            return False
+        return self.board[i][j] > 0
+    
+    # check if the constraint at a certain row is met (helper function)
+    def validConstraint(self, row, num, first):
+        if first:
+            val = 0
         else:
-            currentBoard = board
+            val = -1
             
-        for i in r[d]:
-            if current[i] != 0:
-                if not validConstraint(currentBoard[i], current[i], first):
-                    return False
+        return row[row > 0][val] == num
     
-    return True
-
-# check that a certain position does not violate any constraints
-def checkConstraintSquare(board, constraints, i, j):
-    r = {d: [j] for d in ["top", "left", "bottom", "right"]}
-    r["left"] = [i]
-    r["right"] = [i]
-    
-    # top and left work differently since we are iterating from top left to bottom right by row
-    # check if this is the first number a constraint sees for top/left
-    
-    # top
-    for k in range(i - 1, -1, -1):
-        if board[k][j] != 0:
-            del r["top"]
-            break
-    
-    # left
-    for k in range(j - 1, -1, -1):
-        if board[i][k] != 0:
-            del r["left"]
-            break     
-      
-    # for bottom/right  
-    # must wait until row/col is filled to check this constraint
-    # since we are iterating from top left to bottom right row by row
-    
-    # bottom
-    col = board.T[j]
-    if len(col[col > 0]) != 4:
-        del r["bottom"]
-
-    # right
-    row = board[i]
-    if len(row[row > 0]) != 4:
-        del r["right"]
-                    
-    return checkConstraints(board, constraints, r)    
-
-# used for connectedness property in isSolved
-# returns num squares visited and updates visited array
-def dfs(board, i, j, visited):
-    if not validPoint(board, i, j):
-        return 0
-    
-    if visited[i][j] == 1 or board[i][j] == 0:
-        return 0
-    
-    visited[i][j] = 1
-    
-    return 1 + dfs(board, i + 1, j, visited) + \
-    dfs(board, i - 1, j, visited) + \
-    dfs(board, i, j + 1, visited) + \
-    dfs(board, i, j - 1, visited)
-
-# check that an element can reach the last row fully traversed
-# using a modified dfs
-# called once for each positive element in a row with the same visited array
-# visited array may contain less rows than board,
-# the last row of the visited array represents the last row fully traversed
-def connected(board, i, j, visited, distinct):
-    if not validPoint(board, i, j):
-        return False
-    
-    # traversed this square before or this square is invalid
-    if visited[i][j] == distinct or board[i][j] == 0:
-        return False
-    
-    # reached a path from a previous element in the same original row that is connected
-    if visited[i][j] > 0:
+    # check constraints in dictionary r (defaults to all constraints)
+    def checkConstraints(self, r={d:[i for i in range(7)] for d in ["top", "left", "bottom", "right"]}):
+        transpose = self.board.T    
+        
+        # d = top, left, bottom, right
+        for d in r:
+            current = self.constraints[d]
+            first = (d == "top" or d == "left")
+            if d == "top" or d == "bottom":
+                currentBoard = transpose
+            else:
+                currentBoard = self.board
+                
+            for i in r[d]:
+                if current[i] != 0:
+                    if not self.validConstraint(currentBoard[i], current[i], first):
+                        return False
+        
         return True
     
-    if i == visited.shape[0] - 1: # last row fully traversed
-        return True
-    
-    # mark visited with specific positive value for each element in row
-    visited[i][j] = distinct
-    
-    return connected(board, i + 1, j, visited, distinct) or \
-           connected(board, i - 1, j, visited, distinct) or \
-           connected(board, i, j + 1, visited, distinct) or \
-           connected(board, i, j - 1, visited, distinct)
-
-# check if the board is solved
-def isSolved(board, quantities, constraints, l):    
-    f = lambda x, y: x == y
-    
-    if not checkQuantity(board, quantities, f):
-        return False
-    
-    if not checkLines(board):
-        return False
+    # check that a certain position does not violate any constraints
+    def checkConstraintSquare(self, i, j):
+        r = {d: [j] for d in ["top", "left", "bottom", "right"]}
+        r["left"] = [i]
+        r["right"] = [i]
         
-    # connected region
-    for i in range(board.shape[0]):
-        for j in range(board.shape[1]):
-            if board[i][j] != 0:
-                root = (i, j)
-                break   
-            
-    visited = np.zeros_like(board)
-    numVisited = dfs(board, root[0], root[1], visited)
-
-    if not (numVisited == l == 28):
-        return False
+        # top and left work differently since we are iterating from top left to bottom right by row
+        # check if this is the first number a constraint sees for top/left
         
-    if not check2x2(board):
-        return False
-            
-    if not checkConstraints(board, constraints):
-        return False
-            
-    return True
-
-
-# check if a position is valid
-def isValidSquare(board, constraints, quantities, i, j):
-    f = lambda x, y: x <= y
+        # top
+        for k in range(i - 1, -1, -1):
+            if self.board[k][j] != 0:
+                del r["top"]
+                break
+        
+        # left
+        for k in range(j - 1, -1, -1):
+            if self.board[i][k] != 0:
+                del r["left"]
+                break     
+          
+        # for bottom/right  
+        # must wait until row/col is filled to check this constraint
+        # since we are iterating from top left to bottom right row by row
+        
+        # bottom
+        col = self.board.T[j]
+        if len(col[col > 0]) != 4:
+            del r["bottom"]
     
-    if not checkQuantity(board, quantities, f, [board[i][j]]):
-        return False
+        # right
+        row = self.board[i]
+        if len(row[row > 0]) != 4:
+            del r["right"]
+                        
+        return self.checkConstraints(r)    
     
-    row = board[i]
-    if not checkRow(row):
-        return False
+    # used for connectedness property in isSolved
+    # returns num positive squares visited and updates visited array
+    def dfs(self, i, j, visited):
+        if not self.validPoint(i, j):
+            return 0
+        
+        if visited[i][j] == 1 or self.board[i][j] == 0:
+            return 0
+        
+        visited[i][j] = 1
+        
+        return 1 + self.dfs(i + 1, j, visited) + \
+        self.dfs(i - 1, j, visited) + \
+        self.dfs(i, j + 1, visited) + \
+        self.dfs(i, j - 1, visited)
     
-    col = board.T[j]
-    if not checkRow(col):
-        return False
-    
-    posRow = row[row > 0]
-    posCol = col[col > 0]
-    f = lambda x, y: x < y
-    
-    # if 3 numbers are filled in then we can find the final number in the line (20 - sum(line))
-    # make sure there is enough quantity to fill in the final number
-    if len(posRow) == 3 and not checkQuantity(board, quantities, f, [20 - sum(posRow)]):
-        return False
-    
-    if len(posCol) == 3 and not checkQuantity(board, quantities, f, [20 - sum(posCol)]):
-        return False
-
-    if not check2x2Square(board, i, j):
-        return False
-    
-    if not checkConstraintSquare(board, constraints, i, j):
-        return False   
-    
-    return True 
-
-# check if board can ever be valid at this point going forward
-def canContinue(board, i, j):
-    # get the line values up to i, j inclusive
-    row = board[i][:j + 1]
-    col = board.T[j][:i + 1]
-            
-    # must have filled in at least 4 - k numbers by this point of row/col
-    posRowCount = len(row[row > 0])
-    posColCount = len(col[col > 0])
-    for k in range(4): 
-        if j == 6 - k and posRowCount < 4 - k:
+    # check that an element can reach the last row fully traversed
+    # using a modified dfs
+    # called once for each positive element in a row with the same visited array
+    # visited array may contain less rows than board,
+    # the last row of the visited array represents the last row fully traversed
+    def connected(self, i, j, visited, distinct):
+        if not self.validPoint(i, j):
             return False
         
-        if i == 6 - k and posColCount < 4 - k:
-            return False    
-            
-    return True
-
-# recursive function to solve board
-def solveBoard(board, constraints, given, quantities, iterations, flipped, rowIndex, colIndex, l):        
-    #print(board)
-    #input()
+        # traversed this square before or this square is invalid
+        if visited[i][j] == distinct or self.board[i][j] == 0:
+            return False
         
-    # iterations acts as a pointer
-    iterations[0] += 1
+        # reached a path from a previous element in the same original row that is connected
+        if visited[i][j] > 0:
+            return True
+        
+        if i == visited.shape[0] - 1: # last row fully traversed
+            return True
+        
+        # mark visited with specific positive value for each element in row
+        visited[i][j] = distinct
+        
+        return self.connected(i + 1, j, visited, distinct) or \
+               self.connected(i - 1, j, visited, distinct) or \
+               self.connected(i, j + 1, visited, distinct) or \
+               self.connected(i, j - 1, visited, distinct)
     
-    if l == 28 and isSolved(board, quantities, constraints, l):
-        print("Iterations: {}".format(iterations[0]))
-        return True                
-    if l >= 28:
+    # check if the board is solved
+    def isSolved(self):    
+        f = lambda x, y: x == y
+        
+        if not self.checkQuantity(f):
+            return False
+        
+        if not self.checkLines():
+            return False
+            
+        # connected region
+        for i in range(self.board.shape[0]):
+            for j in range(self.board.shape[1]):
+                if self.board[i][j] != 0:
+                    root = (i, j)
+                    break   
+                
+        visited = np.zeros_like(self.board)
+        numVisited = self.dfs(root[0], root[1], visited)
+    
+        if not (numVisited == self.numPos == 28):
+            return False
+            
+        if not self.check2x2():
+            return False
+                
+        if not self.checkConstraints():
+            return False
+                
+        return True
+    
+    
+    # check if a position is valid
+    def isValidSquare(self, i, j):
+        f = lambda x, y: x <= y
+        
+        if not self.checkQuantity(f, [self.board[i][j]]):
+            return False
+        
+        row = self.board[i]
+        if not self.checkRow(row):
+            return False
+        
+        col = self.board.T[j]
+        if not self.checkRow(col):
+            return False
+        
+        posRow = row[row > 0]
+        posCol = col[col > 0]
+        f = lambda x, y: x < y
+        
+        # if 3 numbers are filled in then we can find the final number in the line (20 - sum(line))
+        # make sure there is enough quantity to fill in the final number
+        if len(posRow) == 3 and not self.checkQuantity(f, [20 - sum(posRow)]):
+            return False
+        
+        if len(posCol) == 3 and not self.checkQuantity(f, [20 - sum(posCol)]):
+            return False
+    
+        if not self.check2x2Square(i, j):
+            return False
+        
+        if not self.checkConstraintSquare(i, j):
+            return False   
+        
+        return True 
+    
+    # check if board can ever be valid at this point going forward
+    def canContinue(self, i, j):
+        # get the line values up to i, j inclusive
+        row = self.board[i][:j + 1]
+        col = self.board.T[j][:i + 1]
+                
+        # must have filled in at least 4 - k numbers by this point of row/col
+        posRowCount = len(row[row > 0])
+        posColCount = len(col[col > 0])
+        for k in range(4): 
+            if j == 6 - k and posRowCount < 4 - k:
+                return False
+            
+            if i == 6 - k and posColCount < 4 - k:
+                return False    
+                
+        return True
+    
+    # driver function to solve board
+    def solveBoard(self):
+        # check if flipping vertically is faster
+        if self.constraints["top"].count(0) > self.constraints["bottom"].count(0):
+            self.flipped = True
+            self.flipBoardVertically()
+            print("Using flipped algorithm to go faster")    
+            
+        # fill in self.given and self.quantities
+        self.given.clear()
+        self.quantities.clear()
+        for i in range(self.board.shape[0]):
+            for j in range(self.board.shape[1]):
+                if self.board[i][j] > 0:
+                    self.given.add((i,j))
+                    self.quantities[self.board[i][j]] += 1
+        
+        self.numPos = len(self.given)
+                    
+        t = time.time()
+        solved = self.solveBoardHelper(0, 0)
+        t = time.time() - t
+        
+        print("Iterations: {}".format(self.iterations))
+        
+        if self.flipped:
+            self.flipBoardVertically() 
+            
+        print(self.board)
+        if solved:
+            print("Solved after {} seconds.".format(t))
+        else:
+            print("Found impossible to solve after {} seconds.".format(t))        
+        return solved
+    
+    # recursive function to solve board
+    def solveBoardHelper(self, rowIndex, colIndex):        
+        #print(self.board)
+        #input()
+            
+        self.iterations += 1
+        
+        if self.numPos == 28 and self.isSolved():
+            return True                
+        if self.numPos >= 28:
+            return False
+        
+        if self.iterations % 1000 == 0:
+            print(self.iterations)
+            if 0:
+                if self.flipped:
+                    print(self.board[::-1])
+                else:
+                    print(self.board)
+            
+        for i in range(rowIndex, self.board.shape[0]):                        
+            # check if this is the first time visiting a row for this
+            # specific board by checking if we are at the first column
+            # and we are at a square that has not been modified yet
+            if i > 1 and colIndex == 0 and (self.board[i][0] == 0 or (i, 0) in self.given):
+                # check connectedness property for row i - 2
+                # by checking if each element in row i - 2 can reach an element
+                # in row i - 1, since row i - 1 is the last completed row
+                # (then eventually an element in row i - 1 can connect with an
+                # element in row i)
+                visited = np.zeros((i, self.board.shape[1])) # rows 0 to i - 1
+                for j in range(self.board.shape[1]):
+                    if self.board[i - 2][j] > 0 and not self.connected(i - 2, j, visited, j + 1):
+                        return False
+            
+            for j in range(colIndex, self.board.shape[1]):
+                og = self.board[i][j]
+                
+                # make sure constraints still hold at given number
+                if (i, j) in self.given and not self.checkConstraintSquare(i, j):
+                    return False
+                    
+                if self.board[i][j] < 7 and (i,j) not in self.given:
+                    self.board[i][j] += 1
+                    
+                    # see if you can continue with a posNum
+                    # (can update self.quantities and self.numPos after since
+                    # self.canContinue does not rely on either)
+                    if og == 0 and not self.canContinue(i, j):
+                        self.board[i][j] = og
+                        return False                   
+                                            
+                    if og == 0:
+                        self.numPos += 1
+                    self.quantities[og] -= 1
+                    self.quantities[self.board[i][j]] += 1
+                    while self.board[i][j] <= 7 and not self.isValidSquare(i, j):
+                        self.quantities[self.board[i][j]] -= 1
+                        self.board[i][j] += 1
+                        self.quantities[self.board[i][j]] += 1
+                        
+                    if self.board[i][j] <= 7:
+                        if self.solveBoardHelper(i, j):
+                            return True
+    
+                    self.quantities[self.board[i][j]] -= 1                
+                    self.board[i][j] = og
+                    self.quantities[og] += 1
+                    if og == 0:
+                        self.numPos -= 1
+                        
+                    # see if you can continue with 0
+                    if og == 0 and not self.canContinue(i, j):
+                        return False
+            
+            colIndex = 0
+                            
         return False
     
-    if iterations[0] % 1000 == 0:
-        print(iterations[0])
-        if 0:
-            if flipped:
-                print(board[::-1])
-            else:
-                print(board)
-        
-    for i in range(rowIndex, board.shape[0]):                        
-        # check if this is the first time visiting a row for this
-        # specific board by checking if we are at the first column
-        # and we are at a square that has not been modified yet
-        if i > 1 and colIndex == 0 and (board[i][0] == 0 or (i, 0) in given):
-            # check connectedness property for row i - 2
-            # by checking if each element in row i - 2 can reach an element
-            # in row i - 1, since row i - 1 is the last completed row
-            # (then eventually an element in row i - 1 can connect with an
-            # element in row i)
-            visited = np.zeros((i, board.shape[1])) # rows 0 to i - 1
-            for j in range(board.shape[1]):
-                if board[i - 2][j] > 0 and not connected(board, i - 2, j, visited, j + 1):
-                    return False
-        
-        for j in range(colIndex, board.shape[1]):
-            og = board[i][j]
-            
-            # make sure constraints still hold at given number
-            if (i, j) in given and not checkConstraintSquare(board, constraints, i, j):
-                return False
-                
-            if board[i][j] < 7 and (i,j) not in given:
-                board[i][j] += 1
-                
-                # see if you can continue with a posNum
-                if og == 0 and not canContinue(board, i, j):
-                    board[i][j] = og
-                    return False
-                elif og == 0:
-                    l += 1
-                
-                quantities[og] -= 1
-                quantities[board[i][j]] += 1
-                while board[i][j] <= 7 and not isValidSquare(board, constraints, quantities, i, j):
-                    quantities[board[i][j]] -= 1
-                    board[i][j] += 1
-                    quantities[board[i][j]] += 1
-                    
-                if board[i][j] <= 7:
-                    if solveBoard(board, constraints, given, quantities, iterations, flipped, i, j, l):
-                        return True
-
-                quantities[board[i][j]] -= 1                
-                board[i][j] = og
-                quantities[og] += 1
-                # see if you can continue with 0
-                if og == 0 and not canContinue(board, i, j):
-                    return False
-                elif og == 0:
-                    l -= 1
-        
-        colIndex = 0
-                        
-    return False
-
-# flip board and constraints
-# return new board
-def flipBoardVertically(board, constraints):
-    constraints["bottom"], constraints["top"] = constraints["top"], constraints["bottom"]
-    constraints["left"].reverse()
-    constraints["right"].reverse()
-    board = board[::-1]
-    return board
+    # flip board and constraints
+    def flipBoardVertically(self):
+        self.constraints["bottom"], self.constraints["top"] = self.constraints["top"], self.constraints["bottom"]
+        self.constraints["left"].reverse()
+        self.constraints["right"].reverse()
+        self.board = self.board[::-1]
     
 
 if __name__ == "__main__":       
@@ -433,31 +477,5 @@ if __name__ == "__main__":
         if ans == "y":
             break
         
-    # check if flipping vertically is faster
-    flipped = False
-    if constraints["top"].count(0) > constraints["bottom"].count(0):
-        flipped = True
-        board = flipBoardVertically(board, constraints)
-        print("Using flipped algorithm to go faster")    
-        
-    given = set()
-    quantities = Counter()
-    for i in range(board.shape[0]):
-        for j in range(board.shape[1]):
-            if board[i][j] > 0:
-                given.add((i,j))
-                quantities[board[i][j]] += 1
-                
-    t = time.time()
-    solved = solveBoard(board, constraints, given, quantities, [0], flipped, 0, 0, len(given))
-    t = time.time() - t
-    
-    if flipped:
-        board = flipBoardVertically(board, constraints)
-        
-    print(board)
-    if solved:
-        print("Solved after {} seconds.".format(t))
-    else:
-        print("Found impossible to solve after {} seconds.".format(t))
-    
+    solver = Solver(board, constraints)
+    solved = solver.solveBoard()
