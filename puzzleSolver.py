@@ -230,8 +230,9 @@ class Solver(object):
                 
         visited = np.zeros_like(self.board)
         numVisited = self.dfs(root[0], root[1], visited)
-    
-        if not (numVisited == self.numPos == 28):
+        
+        n = self.board.shape[0] # sum from 1 to n = n * (n + 1) / 2
+        if not (numVisited == n * (n + 1) / 2):
             return False
             
         if not self.check2x2():
@@ -300,21 +301,20 @@ class Solver(object):
     def solveBoard(self):
         # check if flipping vertically is faster
         if self.constraints["top"].count(0) > self.constraints["bottom"].count(0):
-            self.flipped = True
             self.flipBoardVertically()
             print("Using flipped algorithm to go faster")    
             
-        # fill in self.given and self.quantities
+        # fill in self.given, self.quantities, and self.numPos
         self.given.clear()
         self.quantities.clear()
+        self.numPos = 0
         for i in range(self.board.shape[0]):
             for j in range(self.board.shape[1]):
                 if self.board[i][j] > 0:
                     self.given.add((i,j))
                     self.quantities[self.board[i][j]] += 1
-        
-        self.numPos = len(self.given)
-                    
+                    self.numPos += 1
+                            
         t = time.time()
         solved = self.solveBoardHelper(0, 0)
         t = time.time() - t
@@ -416,6 +416,7 @@ class Solver(object):
         self.constraints["left"].reverse()
         self.constraints["right"].reverse()
         self.board = self.board[::-1]
+        self.flipped = not self.flipped
     
 
 if __name__ == "__main__":       
