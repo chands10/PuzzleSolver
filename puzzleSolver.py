@@ -423,7 +423,7 @@ if __name__ == "__main__":
     # top left board
     constraints1 = {"top": [5,4,0,0,0,7,5], "left": [5,7,0,0,0,5,7], "bottom": [5,7,0,0,0,3,6], "right": [7,4,0,0,0,7,6]}
     
-    board1 = np.zeros((7,7))
+    board1 = np.zeros((7,7), dtype=int)
     board1[0][2] = 4
     board1[1][3] = 6
     board1[2][0] = 5
@@ -436,7 +436,7 @@ if __name__ == "__main__":
     # top right board
     constraints2 = {"top": [0,0,5,6,0,6,7], "left": [0,0,5,6,0,7,6], "bottom": [6,7,5,0,0,0,0], "right": [6,6,4,0,0,0,0]}
     
-    board2 = np.zeros((7,7))
+    board2 = np.zeros((7,7), dtype=int)
     board2[0][1] = 2
     board2[1][0] = 2
     board2[3][5] = 3
@@ -447,7 +447,7 @@ if __name__ == "__main__":
     # bottom left board
     constraints3 = {"top": [7,0,0,5,0,7,0], "left": [0,0,0,7,0,0,0], "bottom": [0,7,0,3,0,0,5], "right": [0,0,0,5,0,0,0]}
     
-    board3 = np.zeros((7,7))
+    board3 = np.zeros((7,7), dtype=int)
     board3[0][4] = 4
     board3[1][1] = 6
     board3[2][0] = 4
@@ -460,7 +460,7 @@ if __name__ == "__main__":
     #bottom right board
     constraints4 = {"top": [0] * 7, "left": [i for i in range(1, 8)], "bottom": [0,6,0,5,0,4,0], "right": [0,6,0,4,0,2,0]}
     
-    board4 = np.zeros((7,7))
+    board4 = np.zeros((7,7), dtype=int)
     board4[2][6] = 3
     board4[4][4] = 4
     board4[6][2] = 3   
