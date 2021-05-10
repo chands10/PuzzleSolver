@@ -30,7 +30,7 @@ def merge(side1, side2):
 """
 Requires a bracket that has a length = n which is a power of 2
 Return a dictionary that contains the probability of a team (key) winning in its value
-Dynamic programming/divide and conquer algorithm
+Variable elimination (dynamic programming) + divide and conquer algorithm
 
 Subproblem: pr[i, j] = probability that team i wins in round j
 
@@ -46,7 +46,7 @@ The probability that team i wins against their opponent in round j is the sum ov
 
 This algorithm will iterate through one round at a time, reducing the need for a 2 dimensional array.
 
-The number of possible teams a team can face in round j is 2^(j - 1) < n. This is also a divide and conquer problem.
+The number of possible teams a team can face in round j is 2^(j - 1) < n. We can use divide and conquer to solve this.
 
 By the Master Theorem we have that we are solving a = 2 subproblems of size n / b = n / 2 and then combining these answers in O(n^d) = O(n^2) time. Thus a = b = d = 2 and 2 > log_2(2) so the running time of this function is O(n^2) 
 """ 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     increase, (i, j) = best
     
     print()
-    print("Swap teams {} and {} to increase team {}'s probability of winning by {:.4f}".format(bracket[i], bracket[j], team, increase))
+    print("Swap teams {} and {} to increase team {}'s probability of winning by {:.5f}%".format(bracket[i], bracket[j], team, increase * 100))
     print()
     
     # find optimal solution for team
