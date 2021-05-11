@@ -5,14 +5,14 @@ from math import inf
 # fill results array in with probabilities of side1 making it to the next round by considering each team in side1 playing each team in side2 using dynamic programming
 # pr[i, j] = pr[i, j - 1] * sum_{k \in possible teams can face in round j} [k / (i + k) * pr[k, j - 1]]
 def play(side1, side2, results):
-    for team1, p1 in side1:
+    for team1, p1 in side1.items():
         newProb = 0
         # sum_{k \in possible teams can face in round j} [k / (i + k) * pr[k, j - 1]]
-        for team2, p2 in side2:
+        for team2, p2 in side2.items():
             newProb += team2 / (team1 + team2) * p2
         
         newProb *= p1 # multiply by pr[i, j - 1]
-        results.append((team1, newProb))
+        results[team1] = newProb
         
 
 # helper function for findProbWinning
@@ -20,7 +20,7 @@ def play(side1, side2, results):
 # each team in the list has played each other team in the same list
 # return probabilities after these teams play each other
 def merge(side1, side2):    
-    results = []    
+    results = {}    
     play(side1, side2, results) # update probabilities for each team in side1 after playing each team in side2
     play(side2, side1, results) # update probabilities for each team in side2 after playing each team in side1
     
@@ -51,8 +51,8 @@ The number of possible teams a team can face in round j is 2^(j - 1) < n. We can
 By the Master Theorem we have that we are solving a = 2 subproblems of size n / b = n / 2 and then combining these answers in O(n^d) = O(n^2) time. Thus a = b = d = 2 and 2 > log_2(2) so the running time of this function is O(n^2) 
 """ 
 def findProbWinning(bracket):
-    # probs will be a list of lists of tuples. The tuples represents a team and its probability of making it to that round. The most inner list contains all of the teams that have already faced each other. Lists here that are adjacent to each other (in pairs of 2s) will face each other in the next round
-    probs = [[(b, 1)] for b in bracket] # base case. List of lists of length 1
+    # probs will be a list of dictionaries. The dictionaries contain a team (key) and its probability of making it to that round (value). Each dictionary in the list contains all of the teams that have already faced each other. Dictionaries here that are adjacent to each other (in pairs of 2s) will face each other in the next round
+    probs = [{b: 1} for b in bracket] # base case. List of lists of length 1
     while len(probs) > 1: # log_2(n) iterations.
         newProbs = [0] * (len(probs) // 2)
         for j in range(0, len(probs), 2): # merge like in merge sort
@@ -61,7 +61,6 @@ def findProbWinning(bracket):
         probs = newProbs
     
     probs = probs[0] # inner list will be length n
-    probs = {pair[0]: pair[1] for pair in probs} # convert to dictionary
     return probs
             
 
