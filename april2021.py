@@ -60,7 +60,7 @@ def findProbWinning(bracket):
         
         probs = newProbs
     
-    probs = probs[0] # inner list will be length n
+    probs = probs[0] # inner dictionary will be length n
     return probs
             
 
