@@ -146,17 +146,16 @@ if 1 and __name__ == "__main__":
     N = range(1, 51)
     nashSimulation = [simulationNash(n) for n in N]
     nonNashSimulation = [simulationNonNash(n) for n in N]
-    plt.plot(N, nashSimulation)
-    plt.plot(N, nonNashSimulation)
+    plt.plot(N, nashSimulation, label="Nash Simulation")
+    plt.plot(N, nonNashSimulation, label="Non-Nash Simulation")
     
-    # Nash equilibrium
     nashProb = [probNash(n) for n in N]
-    
-    plt.plot(N, nashProb)
-    
-    # Nonnash equilibrium
     nonNashProb = [probNonNash(n) for n in N]
-    plt.plot(N, nonNashProb)
+    plt.plot(N, nashProb, label="Nash Probability")    
+    plt.plot(N, nonNashProb, label="Non-Nash Probability")
+    
+    plt.legend()
+    plt.show()
     
     for i in N:
         if nonNashProb[i - 1] > nashProb[i - 1]:
