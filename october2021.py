@@ -5,7 +5,9 @@ from functools import lru_cache
 
 def simulationNonNash(n):
     """
-    Win when there is at least one race of all zeros
+    New strategy is to put a nonzero amount of fuel in each race, so you will only win if there is a race that no one puts any fuel in.
+    Your fuel will be less than 1 in each race. Everyone else will put all of their fuel (1) in one race.
+    Win when there is at least one race of all zeros.
     """
     trials = 1000
     wins = 0
@@ -24,6 +26,9 @@ def simulationNonNash(n):
     return wins / trials
 
 def simulationNash(n):
+    """
+    Everyone puts all fuel (1) in one race.
+    """
     trials = 1000
     wins = 0
         
@@ -53,7 +58,7 @@ def probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled):
     such that each of the numRacesFilled races are filled (race that contains at least one nonzero value).
     numRacesFilled - 1 <= i <= numOtherRacers - 1 since need at least one racer in each race.
     Thus numOtherRacers - i >= 1.
-    p = probability of racer dedicating all energy to a certain race
+    p = probability of racer dedicating all fuel to a certain race
     """
     if numRacesFilled == 1:
         return p**numOtherRacers
@@ -65,11 +70,12 @@ def probExactlyNumRacesFilled(n, numRacesFilled):
     Probability that exactly numRacesFilled races out of n races are filled (race that contains at least one nonzero value)
     """
     numOtherRacers = 3 * n - 1
-    p = 1 / n # probability of racer dedicating all energy to a certain race
+    p = 1 / n # probability of racer dedicating all fuel to a certain race
     return math.comb(n, numRacesFilled) * probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled)
        
 def probNonNash(n):
     """
+    New strategy is to put a nonzero amount of fuel in each race, so you will only win if there is a race that no one puts any fuel in
     P(Win) = P(at least one race with all 0s) = 1 - P(no race with all 0s)
     = 1 - P(all races with nonzeros) = 1 - P(all races filled) (filled not counting nonnash player)
     """
@@ -79,8 +85,8 @@ def probNonNash(n):
 
 def probNash(n):
     """
-    0 <= 3n - i <= 3n - 1 racers dedicate all energy to n - 1 races (that you are not in) ((n - 1)/n)**(3 * n - i).
-    Remaining 1 <= i <= 3n racers dedicate all energy to last remaining race (that *you are assumed to be in*, calculate probability of winning from this case) (1/n)**(i - 1).
+    0 <= 3n - i <= 3n - 1 racers dedicate all fuel to n - 1 races (that you are not in) ((n - 1)/n)**(3 * n - i).
+    Remaining 1 <= i <= 3n racers dedicate all fuel to last remaining race (that *you are assumed to be in*, calculate probability of winning from this case) (1/n)**(i - 1).
     Ties broken randomly, so you have 1 / i chance of winning in this case.
     Sum over all combinations.
     """
