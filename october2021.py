@@ -5,9 +5,9 @@ from functools import lru_cache
 
 def simulationNonNash(n):
     """
-    New strategy is to put a nonzero amount of fuel in each race, so you will only win if there is a race that no one puts any fuel in.
+    New strategy is to put a nonzero amount of fuel in each race, so you will only win if there is a race that no one else puts any fuel in.
     Your fuel will be less than 1 in each race. Everyone else will put all of their fuel (1) in one race.
-    Win when there is at least one race of all zeros.
+    You will win when there is at least one race of all zeros (not counting yourself).
     """
     trials = 1000
     wins = 0
@@ -75,7 +75,7 @@ def probExactlyNumRacesFilled(n, numRacesFilled):
        
 def probNonNash(n):
     """
-    New strategy is to put a nonzero amount of fuel in each race, so you will only win if there is a race that no one puts any fuel in
+    New strategy is to put a nonzero amount of fuel in each race, so you will only win if there is a race that no one else puts any fuel in
     P(Win) = P(at least one race with all 0s) = 1 - P(no race with all 0s)
     = 1 - P(all races with nonzeros) = 1 - P(all races filled) (filled not counting nonnash player)
     """
