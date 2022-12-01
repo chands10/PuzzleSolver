@@ -85,10 +85,10 @@ def probNonNash(n):
 
 def probNash(n):
     """
-    0 <= 3n - i <= 3n - 1 racers dedicate all fuel to n - 1 races (that you are not in) ((n - 1)/n)**(3 * n - i).
-    Remaining 1 <= i <= 3n racers dedicate all fuel to last remaining race (that *you are assumed to be in*, calculate probability of winning from this case) (1/n)**(i - 1).
-    Ties broken randomly, so you have 1 / i chance of winning in this case.
-    Sum over all combinations.
+    0 <= 3n - i <= 3n - 1 racers dedicate all fuel to n - 1 races (that you are not in) shown by ((n - 1)/n)**(3 * n - i).
+    The remaining 1 <= i <= 3n racers (including you) dedicate all fuel to last remaining race (that *you are already assumed to be in*) shown by (1/n)**(i - 1).
+    The probability of winning in this case is then 1/i, since i - 1 racers were added to your race, and ties are broken randomly.
+    Sum over all values of i in your race. i >= 1 since this is your race.
     """
     return sum(math.comb(3 * n - 1, 3 * n - i) * ((n - 1)/n)**(3 * n - i) * (1/n)**(i - 1) * 1/i for i in range(1, 3 * n + 1))
 
