@@ -45,7 +45,7 @@ def simulationNash(n):
 
 """
 Could increase efficiency by removing multiplication p**numOtherRacers
-and p**(numOtherRacers - i), and instead just multiply by p**numOtherRacers
+and p**(numOtherRacers - i), and instead just multiply once by p**numOtherRacers
 in probExactlyNumRacesFilled, but this makes less sense analytically.
 If done this way then can more easily build up solution using
 dynamic programming instead of cache
@@ -54,11 +54,11 @@ dynamic programming instead of cache
 def probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled):
     """
     Helper function for probExactlyNumRacesFilled.
-    Place i racers in numRacesFilled - 1 races and remaining numOtherRacers - i racers in last remaining race
+    Place i racers in numRacesFilled - 1 races and the remaining numOtherRacers - i racers in the remaining race
     such that each of the numRacesFilled races are filled (race that contains at least one nonzero value).
-    numRacesFilled - 1 <= i <= numOtherRacers - 1 since need at least one racer in each race.
+    numRacesFilled - 1 <= i <= numOtherRacers - 1 since we need at least one racer in each race.
     Thus numOtherRacers - i >= 1.
-    p = probability of racer dedicating all fuel to a certain race
+    p = probability of a racer dedicating all fuel to a certain race
     """
     if numRacesFilled == 1:
         return p**numOtherRacers

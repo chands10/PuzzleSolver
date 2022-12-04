@@ -17,4 +17,16 @@ So $P(\text{Win}) = P(\text{at least one race with all 0s})$
 $ = 1 - P(\text{no race with all 0s})$  
 $ = 1 - P(\text{all races with nonzeros})$  
 $ = 1 - P(\text{all races filled})$  
-where a race is filled if at least one racer (not counting yourself) dedicates all energy to this race.
+where a race is *filled* if at least one racer (not counting yourself) dedicates all energy to this race.  
+
+$probExactlyNumRacesFilled(N, numRacesFilled)$ is the probability that exactly $numRacesFilled$ races out of $N$ races are filled.  
+
+$probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled)$ is a helper function for $probExactlyNumRacesFilled$.  
+Place $i$ racers in $numRacesFilled - 1$ races and the remaining $numOtherRacers - i$ racers in the last remaining race such that each of the $numRacesFilled$ races are filled.  
+$numRacesFilled - 1 \leq i \leq numOtherRacers - 1$ since we need at least one racer in each race.  
+Thus $numOtherRacers - i \geq 1$.  
+$p$ is the probability of a racer dedicating all fuel to a certain race.  
+
+We could increase the efficiency of this function by removing the multiplication $p^{numOtherRacers}$ and $p^{numOtherRacers - i}$, and instead just multiply once by $p^{numOtherRacers}$ in $probExactlyNumRacesFilled$, but this makes less sense analytically.  
+If done this way then can more easily build up solution using dynamic programming instead of cache
+
