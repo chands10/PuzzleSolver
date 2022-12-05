@@ -28,5 +28,12 @@ Thus $numOtherRacers - i \geq 1$.
 $p$ is the probability of a racer dedicating all fuel to a certain race.  
 
 We could increase the efficiency of this function by removing the multiplication $p^{numOtherRacers}$ and $p^{numOtherRacers - i}$, and instead just multiply once by $p^{numOtherRacers}$ in $probExactlyNumRacesFilled$, but this makes less sense analytically.  
-If done this way then can more easily build up solution using dynamic programming instead of cache
-
+If done this way then we can more easily build up a solution using dynamic programming instead of a cache.  
+We can rewrite $probExactlyNumRacesFilled$ to be non-recursive based on the equations above, but this function is much slower to run this way compared to the recursive way (due to caching).  
+Let $S$ be the set of all ordered sets whose $numRacesFilled$ integer elements are all greater than or equal to 1 and sum to $3N - 1$ (given that order matters).  
+$$S = \{S_i : S_i = \{s_{ij} : 1 \leq j \leq numRacesFilled, s_{ij} \geq 1, \sum_{s \in S_i} s = 3N - 1\}\}$$
+$S$ is equivalent to all of the ways that all of the other $3N - 1$ racers could fill $numRacesFilled$ races (this part does use recursion to find).
+$$probExactlyNumRacesFilled(N, numRacesFilled) = \binom{N}{numRacesFilled} \sum_{S_i \in S} \left(\frac{numRacesFilled!}{\prod_{s \in S_i} s!} \cdot \left(\frac{1}{N} \right)^{3N - 1} \right)$$
+$$ = \binom{N}{numRacesFilled} \cdot numRacesFilled! \cdot \left(\frac{1}{N} \right)^{3N - 1} \sum_{S_i \in S} \frac{1}{\prod_{s \in S_i} s!}$$
+Note in the first equations we have $p = \frac{1}{N}$ and $numOtherRacers = 3N - 1$.  
+The first equation can reduce to this equation, since the first equation is multiplying many combinations together, and simplifying these multiplications just results to this equation.

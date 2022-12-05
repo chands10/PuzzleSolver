@@ -47,8 +47,8 @@ def simulationNash(n):
 Could increase efficiency by removing multiplication p**numOtherRacers
 and p**(numOtherRacers - i), and instead just multiply once by p**numOtherRacers
 in probExactlyNumRacesFilled, but this makes less sense analytically.
-If done this way then can more easily build up solution using
-dynamic programming instead of cache
+If done this way then we can more easily build up a solution using
+dynamic programming instead of a cache
 """
 @lru_cache(maxsize=None)
 def probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled):
