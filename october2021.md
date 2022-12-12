@@ -35,17 +35,18 @@ $$dp[i, j] = \text{the number of ways to fill $i$ races using $j$ unique racers}
 ### Recurrence:
 $$dp[1, j] = 1$$
 $$dp[i, j] = \sum_{k = i - 1}^{j - 1} \binom{j}{k} \cdot dp[i - 1, k]$$
-The recurrence is correct because the number of ways to fill $i$ races using $j$ unique racers is the sum of the number of ways you can choose $k$ of these racers to fill $i - 1$ races (multiplied by the number of ways you can fill these races) and the rest of the $j - k$ racers to fill the last remaining race. We must have that $k \geq i - 1$ since $i - 1$ races would not be able to be filled otherwise. Similarly, we must have that $j - k \geq 1$ to fill the last race.  
+The recurrence is correct because the number of ways to fill $i$ races using $j$ unique racers is the sum of the number of ways you can choose $k$ of these racers to fill $i - 1$ races (multiplied by the number of ways you can fill these races) and have the rest of the $j - k$ racers to fill the last remaining race. We must have that $k \geq i - 1$ since $i - 1$ races would not be able to be filled otherwise. Similarly, we must have that $j - k \geq 1$ to fill the last race. We can rearrange this to be $k \leq j - 1$. Thus $i - 1 \leq k \leq j - 1$.  
 ### Full DP Algorithm:
 Run $i$ from $2 \leq i \leq N$ since $i = 1$ is the base case and more than $N$ races cannot be filled.  
 Run $j$ from $i \leq j \leq 3N - 1$ since we need at least $i$ racers to fill $i$ races, and have at most $3N - 1$ racers that we care about.  
 ### Running Time:
-$O(N^3)$  
+$O(N^3)$
+### Use:
 Then we can just replace $probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled) = p^{numOtherRacers} \cdot dp[numRacesFilled, numOtherRacers]$  
 since this is just the probability of getting to this arrangement multiplied by the number of ways to fill numRacesFilled races using numOtherRacers racers.
 
 # Other
-We can rewrite $probExactlyNumRacesFilled$ to be non-recursive based on the first set of equations above, but this function is much slower to run this way compared to the recursive way (due to caching) and DP way.  
+We can rewrite $probExactlyNumRacesFilled$ to be non-recursive based on the first set of equations above, but this function is much slower to run this way compared to the recursive way (due to caching) and the DP way.  
 Let $S$ be the set of all ordered sets whose $numRacesFilled$ integer elements are all greater than or equal to 1 and sum to $3N - 1$ (given that order matters).  
 $$S = \{S_i : S_i = \{s_{ij} : 1 \leq j \leq numRacesFilled, s_{ij} \geq 1, \sum_{s \in S_i} s = 3N - 1\}\}$$
 $S$ is equivalent to all of the ways that all of the other $3N - 1$ racers could fill $numRacesFilled$ races (this part does use recursion to find).

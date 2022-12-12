@@ -1,7 +1,10 @@
 import matplotlib.pyplot as plt
 import math
+import numpy as np
 import random
 from functools import lru_cache
+
+dp = None
 
 def simulationNonNash(n):
     """
@@ -43,27 +46,35 @@ def simulationNash(n):
     
     return wins / trials
 
-"""
-Could increase efficiency by removing multiplication p**numOtherRacers
-and p**(numOtherRacers - i), and instead just multiply once by p**numOtherRacers
-in probExactlyNumRacesFilled, but this makes less sense analytically.
-If done this way then we can more easily build up a solution using
-dynamic programming instead of a cache
-"""
-@lru_cache(maxsize=None)
+def initializeDP(n):
+    """
+    Initialize DP board
+    dp[i,j] represents the number of ways to fill i races using j unique racers
+    (filled meaning each race has at least one racer in it)
+
+    The recurrence is correct because the number of ways to fill i races using j unique racers is
+    the sum of the number of ways you can choose k of these racers to fill i - 1 races
+    (multiplied by the number of ways you can fill these races)
+    and have the rest of the j - k racers to fill the last remaining race.
+    We must have that k >= i - 1 since i - 1 races would not be able to be filled otherwise.
+    Similarly, we must have that j - k >= 1 to fill the last race.
+    We can rearrange this to be k <= j - 1. Thus i - 1 <= k <= j - 1$.
+    """
+    global dp
+    dp = np.zeros((n + 1, 3 * n))
+    dp[1,:] = 1
+    for i in range(2, n + 1):
+        for j in range(i, 3 * n): # start at j = i since we need at least i racers to fill i races
+            dp[i,j] = sum(math.comb(j, k) * dp[i - 1, k] for k in range(i - 1, j))
+
 def probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled):
     """
     Helper function for probExactlyNumRacesFilled.
-    Place i racers in numRacesFilled - 1 races and the remaining numOtherRacers - i racers in the remaining race
-    such that each of the numRacesFilled races are filled (race that contains at least one nonzero value).
-    numRacesFilled - 1 <= i <= numOtherRacers - 1 since we need at least one racer in each race.
-    Thus numOtherRacers - i >= 1.
     p = probability of a racer dedicating all fuel to a certain race
+    return prob = the probability of getting to this arrangement * the number of ways to fill numRacesFilled races using numOtherRacers racers
     """
-    if numRacesFilled == 1:
-        return p**numOtherRacers
-
-    return sum(math.comb(numOtherRacers, i) * probFilledForSpecificArrangement(i, p, numRacesFilled - 1) * p**(numOtherRacers - i) for i in range(numRacesFilled - 1, numOtherRacers))
+    global dp
+    return p**numOtherRacers * dp[numRacesFilled, numOtherRacers]
     
 def probExactlyNumRacesFilled(n, numRacesFilled):
     """
@@ -94,13 +105,45 @@ def probNash(n):
 
 # ALTERNATIVE UNUSED FUNCTIONS BELOW
 
+@lru_cache(maxsize=None)
+def probFilledForSpecificArrangementCache(numOtherRacers, p, numRacesFilled):
+    """
+    Use recursion + cache
+    Helper function for probExactlyNumRacesFilled.
+    Place i racers in numRacesFilled - 1 races and the remaining numOtherRacers - i racers in the remaining race
+    such that each of the numRacesFilled races are filled (race that contains at least one nonzero value).
+    numRacesFilled - 1 <= i <= numOtherRacers - 1 since we need at least one racer in each race.
+    Thus numOtherRacers - i >= 1.
+    p = probability of a racer dedicating all fuel to a certain race
+    """
+    if numRacesFilled == 1:
+        return p**numOtherRacers
+
+    return sum(math.comb(numOtherRacers, i) * probFilledForSpecificArrangementCache(i, p, numRacesFilled - 1) * p**(numOtherRacers - i) for i in range(numRacesFilled - 1, numOtherRacers))
+
+def probExactlyNumRacesFilledCache(n, numRacesFilled):
+    """
+    Use recursion + cache
+    """
+    numOtherRacers = 3 * n - 1
+    p = 1 / n # probability of racer dedicating all fuel to a certain race
+    return math.comb(n, numRacesFilled) * probFilledForSpecificArrangementCache(numOtherRacers, p, numRacesFilled)
+
+def probNonNashCache(n):
+    """
+    Use recursion + cache
+    """
+    if n == 1: # must use nash strategy
+        return 1 / 3
+    return 1 - probExactlyNumRacesFilledCache(n, n)
+
 def probNonNashOld(n):
     """
     1 - P(all races filled) the but the long way
     """
     if n == 1:
         return 1 / 3
-    return sum(probExactlyNumRacesFilled(n, i) for i in range(1, n))
+    return sum(probExactlyNumRacesFilledCache(n, i) for i in range(1, n))
 
 def probExactlyNumRacesFilled2(n, numRacesFilled):
     """
@@ -149,12 +192,15 @@ def pos(s, vals, i, r):
     return r
 
 if 1 and __name__ == "__main__":
-    N = range(1, 51)
+    maxN = 50
+    N = range(1, maxN + 1)
+
     nashSimulation = [simulationNash(n) for n in N]
     nonNashSimulation = [simulationNonNash(n) for n in N]
     plt.plot(N, nashSimulation, label="Nash Simulation")
     plt.plot(N, nonNashSimulation, label="Non-Nash Simulation")
     
+    initializeDP(maxN)
     nashProb = [probNash(n) for n in N]
     nonNashProb = [probNonNash(n) for n in N]
     plt.plot(N, nashProb, label="Nash Probability")    
