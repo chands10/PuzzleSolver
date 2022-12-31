@@ -40,7 +40,7 @@ The recurrence is correct because the number of ways to fill $i$ races using $j$
 Run $i$ from $2 \leq i \leq N$ since $i = 1$ is the base case and more than $N$ races cannot be filled.  
 Run $j$ from $i \leq j \leq 3N - 1$ since we need at least $i$ racers to fill $i$ races, and have at most $3N - 1$ racers that we care about.  
 ### Running Time:
-$O(N^3)$
+$O(N^3)$ (if you precompute factorials)
 ### Use:
 Then we can just replace $probFilledForSpecificArrangement(numOtherRacers, p, numRacesFilled) = p^{numOtherRacers} \cdot dp[numRacesFilled, numOtherRacers]$  
 since this is just the probability of getting to this arrangement multiplied by the number of ways to fill numRacesFilled races using numOtherRacers racers.
