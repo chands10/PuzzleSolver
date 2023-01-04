@@ -53,4 +53,6 @@ $S$ is equivalent to all of the ways that all of the other $3N - 1$ racers could
 $$probExactlyNumRacesFilled(N, numRacesFilled) = \binom{N}{numRacesFilled} \sum_{S_i \in S} \left(\frac{numRacesFilled!}{\prod_{s \in S_i} s!} \cdot \left(\frac{1}{N} \right)^{3N - 1} \right)$$
 $$ = \binom{N}{numRacesFilled} \cdot numRacesFilled! \cdot \left(\frac{1}{N} \right)^{3N - 1} \sum_{S_i \in S} \frac{1}{\prod_{s \in S_i} s!}$$
 Note in the first equations we have $p = \frac{1}{N}$ and $numOtherRacers = 3N - 1$.  
-The first equation can reduce to this equation, since the first equation is multiplying many combinations together, and simplifying these multiplications just results to this equation.
+The first equation can reduce to this equation, since the first equation is multiplying many combinations together, and simplifying these multiplications just results to this equation.  
+
+Finally, the [official solution](https://www.janestreet.com/puzzles/robot-swimming-trials-solution/) uses a 3D grid instead of a 2D grid like shown above.
