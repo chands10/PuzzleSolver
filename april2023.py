@@ -11,6 +11,7 @@ class Shape(Enum):
     # cups are unused in final solution
     # originally the program would determine if a square was a quart vs sliver before area was calculated, and we would go through all these combinations
     # but 90 million combinations are too many to brute force
+    # instead use combinatorics to calculate all possible solutions
     leftCup = '🕒'
     rightCup = '🕘'
 
@@ -289,6 +290,8 @@ class Solution:
                 outside = area[4]
                 #print(outside)
                 print(f"{self}\n{self.sequence}\n{area[:-1]}")
+                # half of the boundary are quarts and half are slivers. The number of ways
+                # to rearrange these quarts and slivers given n boundary squares is n choose n/2
                 self.numSolns += comb2(self.numBoundary, self.numBoundary // 2)
                 
                 toCopy = self.grid.copy()
@@ -364,6 +367,8 @@ class Solution:
                 outside = area[4]
                 #print(outside)
                 print(f"{self}\n{self.sequence}\n{area[:-1]}")
+                # half of the boundary are quarts and half are slivers. The number of ways
+                # to rearrange these quarts and slivers given n boundary squares is n choose n/2
                 self.numSolns += comb2(self.numBoundary, self.numBoundary // 2)
                 
                 toCopy = self.grid.copy()
