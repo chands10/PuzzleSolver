@@ -1,13 +1,13 @@
 We will find a solution by first considering 1D and 2D
 # 1D
 We can assume that a point is first chosen such that $0 \leq x \leq 1$. This will be one point of the line segment that we draw. For symmetry reasons, we can assume that this is the left endpoint of the line segment (the line segment will be drawn to the right of this point). We want to find the probability that the right endpoint of the line segment with length $d$ will lie between $1 \leq x \leq 2$. Given a left endpoint at $x$ and a length $d$, we can easily find this probability since we know that the right endpoint is at $x + d$.  
-Thus $P(x, d) = \begin{cases}1 & 1 \leq x + d \leq 2\\0 & \text{otherwise}\end{cases}$  
+Thus $`P(x, d) = \begin{cases}1 & 1 \leq x + d \leq 2\\0 & \text{otherwise}\end{cases}`$  
 Let's assume $d = 0.2$. Then $x \geq 0.8$ for $P(x, d) = 1$. Since $0 \leq x \leq 1$, we have that $P(x, d) = 1$ when $0.8 \leq x \leq 1$.  
 If $d = 1.2$, then $0 \leq x \leq 0.8$ for $P(x, d) = 1$.  
-Through experimentation, we can see that $P(d) = \begin{cases}d & 0 \leq d \leq 1\\2 - d & 1 \leq d \leq 2\\0 & \text{otherwise}\end{cases}$  
+Through experimentation, we can see that $`P(d) = \begin{cases}d & 0 \leq d \leq 1\\2 - d & 1 \leq d \leq 2\\0 & \text{otherwise}\end{cases}`$  
 Thus $P(d)$ is maximized at $d = 1$ with $P(1) = 1$.  
 
-For a more analytical approach as we would have to do in higher dimensions, we can rearrange $P(x, d) = \begin{cases}1 & \max(0, 1 - d) \leq x \leq \min(1, 2 - d)\\0 & \text{otherwise}\end{cases}$    
+For a more analytical approach as we would have to do in higher dimensions, we can rearrange $`P(x, d) = \begin{cases}1 & \max(0, 1 - d) \leq x \leq \min(1, 2 - d)\\0 & \text{otherwise}\end{cases}`$    
 $P(d) = \frac{\int_0^1 P(x, d) dx}{\int_0^1 dx} = \frac{\int_0^1 P(x, d) dx}{1} = \int_0^1 P(x, d) dx = E(d)$  
 $P(d) = \int_0^1 P(x, d) dx = \int_{\max(0, 1 - d)}^{\min(1, 2 - d)} dx = \min(1, 2 - d) - \max(0, 1 - d)$  
 From this equation we can see that when $0 \leq d \leq 1$ we have that $P(d) = 1 - (1 - d) = d$  
@@ -17,10 +17,10 @@ Thus we have the same equations that we found above.
 # 2D
 This is an alternative method to the one posted on the Jane Street website from February 2020.  
 $P(d) = \frac{\int_0^1 \int_0^1 P(x, y, d) dx dy}{\int_0^1 \int_0^1 dx dy} = \int_0^1 \int_0^1 P(x, y, d) dx dy$  
-We can restrict our search to $0 \leq d \leq \sqrt{2}$ because if $d > \sqrt{2}$ then it is impossible for $d$ to cross exactly one unit square. Similar to how in 1D we only considered line segments moving in the right direction because of symmetry reasons, in 2D we only need to consider line segments moving in the right direction or up direction. Thus we only need to consider the upper right quadrant of a circle as possible line segments that can be made.  
+We can restrict our search to $0 \leq d \leq \sqrt{5}$ because if $d > \sqrt{5}$ then it is impossible for $d$ to cross exactly one unit square. Similar to how in 1D we only considered line segments moving in the right direction because of symmetry reasons, in 2D we only need to consider line segments moving in the right direction or up direction. Thus we only need to consider the upper right quadrant of a circle as possible line segments that can be made.  
 $$P(x, y, d) = \frac{\text{arc length of valid positions in quarter circle}}{\text{circumference of quarter circle}}$$  
-$$ = \frac{\theta_{top}(x, y, d) d + \theta_{side}(x, y, d) f}{2 \pi d / 4}$$  
-$$ = \frac{\theta_{top}(x, y, d) + \theta_{side}(x, y, d)}{\pi / 2}$$
+$`$` = \frac{\theta_{top}(x, y, d) d + \theta_{side}(x, y, d) d}{2 \pi d / 4}`$`$  
+$`$` = \frac{\theta_{top}(x, y, d) + \theta_{side}(x, y, d)}{\pi / 2}`$`$
 where $\theta_{top}(x, y, d)$ represents the angle corresponding to the arc that intersects with the unit square between $0 \leq x \leq 1, 1 \leq y \leq 2$ and $\theta_{side}(x, y, d)$ represents the angle corresponding to the arc that intersects with the unit square between $1 \leq x \leq 2, 0 \leq y \leq 1$  
 Instead of calculating both $\theta_{top}$ and $\theta_{side}$, we can instead just find $\theta_{top}$ and multiply by 2 (because of symmetry reasons again, and $\theta_{top}$ and $\theta_{side}$ are independent). This will give us an incorrect value for $P(x, y, d)$, but a correct value for $P(d)$ (which is what we care about) as the symmetry only applies when we integrate over all valid $x$ and $y$.
 $$P'(x, y, d) = \frac{2 \theta_{top}(x, y, d)}{\pi / 2} = \frac{4}{\pi} \theta_{top}(x, y, d)$$  
@@ -39,4 +39,5 @@ $\theta_{top} = \arcsin(\frac{1 - x}{d})$
 $\max(0, 1 - d) \leq x \leq 1$  
 $\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d}))) \leq y \leq \min(1, 2 - d)$  
 $0 \leq d \leq 2$  
-$P_1(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^1 \int_{\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d})))}^{\min(1, 2 - d)} \arcsin(\frac{1 - x}{d}) \,dy \,dx$ for $0 \leq d \leq 2$
+$P_1(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^1 \int_{\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d})))}^{\min(1, 2 - d)} \arcsin(\frac{1 - x}{d}) dy dx$ for $0 \leq d \leq 2$  
+Note: I was surprised that Python was able to compute this integral even though the lower $y$ integral bound used the max function on a function that depended on $x$. If it wasn't able to, then this integral could be separated into two integrals with different $x$ bounds to avoid this.
