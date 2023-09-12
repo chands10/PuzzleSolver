@@ -30,14 +30,16 @@ $\theta_{top}$ represents the angle from the top of the circle to the point at w
 $x + d \cos(\frac{\pi}{2} - \theta_{top}) = 1$, $1 \leq y + d \sin(\frac{\pi}{2} - \theta_{top}) \leq 2$  
 These two equations mean that the circle will intersect $x = 1$ somewhere between $1 \leq y \leq 2$  
 We also have that $y + d \leq 2$ since the arc only intersects with $x = 1$ as defined in our case, not $y = 2$  
-Rearranging $x + d \cos(\frac{\pi}{2} - \theta_{top}) = 1$ gets us that $\theta_{top} = \arcsin(\frac{1 - x}{d})$  
+Rearranging $x + d \cos(\frac{\pi}{2} - \theta_{top}) = 1$ gets us that $\theta_{top} = \sin^{-1}(\frac{1 - x}{d})$  
 Note that this angle is only valid when $1 - x \leq d$, or rather $x + d \geq 1$. This makes sense as in order for the circle to ever touch $x = 1$ this condition must be met. Thus $x \geq 1 - d$, and we have that $\max(0, 1 - d) \leq x \leq 1$  
-The $y$ constraint gets us that $1 - d \sin(\frac{\pi}{2} - \theta_{top}) \leq y \leq 2 - d \sin(\frac{\pi}{2} - \theta_{top})$, but since $y \leq 2 - d \leq 2 - d \sin(\frac{\pi}{2} - \theta_{top})$, we really have that $1 - d \sin(\frac{\pi}{2} - \theta_{top}) \leq y \leq 2 - d$. Thus $\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d}))) \leq y \leq \min(1, 2 - d)$  
-For this bound, we need to make sure that when $d \geq 1$ that $\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d}))) \leq 2 - d$. It can be shown that $1 - d \sin(\arccos(\frac{1 - x}{d})) \leq 2 - d$ is always the case when $d \geq 1$. And $0 \leq 2 - d$ when $d \leq 2$. Thus we restrict case 1 to $0 \leq d \leq 2$.  
+The $y$ constraint gets us that $1 - d \sin(\frac{\pi}{2} - \theta_{top}) \leq y \leq 2 - d \sin(\frac{\pi}{2} - \theta_{top})$, but since $y \leq 2 - d \leq 2 - d \sin(\frac{\pi}{2} - \theta_{top})$, we really have that $1 - d \sin(\frac{\pi}{2} - \theta_{top}) \leq y \leq 2 - d$. Thus $\max(0, 1 - d \sin(\cos^{-1}(\frac{1 - x}{d}))) \leq y \leq \min(1, 2 - d)$  
+For this bound, we need to make sure that when $d \geq 1$ that $\max(0, 1 - d \sin(\cos^{-1}(\frac{1 - x}{d}))) \leq 2 - d$. It can be shown that $1 - d \sin(\cos^{-1}(\frac{1 - x}{d})) \leq 2 - d$ is always the case when $d \geq 1$. And $0 \leq 2 - d$ when $d \leq 2$. Thus we restrict case 1 to $0 \leq d \leq 2$.  
 In summary:  
-$\theta_{top} = \arcsin(\frac{1 - x}{d})$  
+$\theta_{top} = \sin^{-1}(\frac{1 - x}{d})$  
 $\max(0, 1 - d) \leq x \leq 1$  
-$\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d}))) \leq y \leq \min(1, 2 - d)$  
+$\max(0, 1 - d \sin(\cos^{-1}(\frac{1 - x}{d}))) \leq y \leq \min(1, 2 - d)$  
 $0 \leq d \leq 2$  
-$P_1(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^1 \int_{\max(0, 1 - d \sin(\arccos(\frac{1 - x}{d})))}^{\min(1, 2 - d)} \arcsin(\frac{1 - x}{d}) dy dx$ for $0 \leq d \leq 2$  
+$P_1(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^1 \int_{\max(0, 1 - d \sin(\cos^{-1}(\frac{1 - x}{d})))}^{\min(1, 2 - d)} \sin^{-1}(\frac{1 - x}{d}) dy dx$ for $0 \leq d \leq 2$  
 Note: I was surprised that Python was able to compute this integral even though the lower $y$ integral bound used the max function on a function that depended on $x$. If it wasn't able to, then this integral could be separated into two integrals with different $x$ bounds to avoid this.
+* Case 2: Arc intersects with $x = 1$ and $y = 2$  
+$\theta_{top}$ represents the angle from the point at which the circle intersects $y = 2$ to the point at which the circle intersects $x = 1$. Note that if the circle intersects with $y = 2$ it must intersect with $x = 1$. It will not intersect with $y = 1$ or nothing else. Thus if we only use the bounds for intersecting $y = 2$ this will also include the bounds for intersecting $x = 1$. We don't need to also reuse the bounds from case 1.
