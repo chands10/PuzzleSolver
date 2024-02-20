@@ -42,4 +42,18 @@ $0 \leq d \leq 2$
 $P_1(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^1 \int_{\max(0, 1 - d \sin(\cos^{-1}(\frac{1 - x}{d})))}^{\min(1, 2 - d)} \sin^{-1}(\frac{1 - x}{d}) dy dx$ for $0 \leq d \leq 2$  
 Note: I was surprised that Python was able to compute this integral even though the lower $y$ integral bound used the max function on a function that depended on $x$. If it wasn't able to, then this integral could be separated into two integrals with different $x$ bounds to avoid this.
 * Case 2: Arc intersects with $x = 1$ and $y = 2$  
-$\theta_{top}$ represents the angle from the point at which the circle intersects $y = 2$ to the point at which the circle intersects $x = 1$. Note that if the circle intersects with $y = 2$ it must intersect with $x = 1$. It will not intersect with $y = 1$ or nothing else. Thus if we only use the bounds for intersecting $y = 2$ this will also include the bounds for intersecting $x = 1$. We don't need to also reuse the bounds from case 1.
+$\theta_{top}$ represents the angle from the point at which the circle intersects $y = 2$ ($\theta_1$) to the point at which the circle intersects $x = 1$ ($\theta_2$). We have already calculated $\theta_2$ above. Note that if the circle intersects with $y = 2$ it must intersect with $x = 1$. It will not intersect with $y = 1$ or anything else. Thus if we only use the bounds for intersecting $y = 2$ this will also include the bounds for intersecting $x = 1$. We don't need to also reuse the bounds from case 1. We can represent this by:  
+$y + d \sin(\frac{\pi}{2} - \theta_1) = 2$, $0 \leq x + d \cos(\frac{\pi}{2} - \theta_1) \leq 1$  
+These two equations mean that the circle will intersect $y = 2$ somewhere between $0 \leq x \leq 1$  
+We also have that $y + d \geq 2$ since the arc intersects with $y = 2$ as defined in our case  
+Rearranging $y + d \sin(\frac{\pi}{2} - \theta_1) = 2$ gets us that $\theta_1 = \cos^{-1}(\frac{2 - y}{d})$  
+Note that this angle is only valid when $2 - y \leq d$, or rather $y + d \geq 2$ as expected. Thus $y \geq 2 - d$, and we have that $\max(0, 2 - d) \leq y \leq 1$  
+The $x$ constraint gets us that $0 \leq x \leq 1 - d \cos(\frac{\pi}{2} - \theta_1)$, and since $\theta_1 = \cos^{-1}(\frac{2 - y}{d}) = \frac{\pi}{2} - \sin^{-1}(\frac{2 - y}{d})$, we have that $0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{2 - y}{d}))$  
+We also need to make sure that $0 \leq 1 - d \cos(\sin^{-1}(\frac{2 - y}{d}))$. This happens when $y < 2 - d \sin(\cos^{-1}(\frac{1}{d}))$. Thus our updated $y$ bound is $\max(0, 2 - d) \leq y \leq \min(1, 2 - d \sin(\cos^{-1}(\frac{1}{d})))$.  
+Now we check the bounds for $d$. We need $2 - d \leq 1$ from our $y$ bound. This occurs when $d \geq 1$. We also need $0 \leq 2 - d \sin(\cos^{-1}(\frac{1}{d}))$. This is true when $d \leq \sqrt{5}$. Thus we restrict case 2 to $1 \leq d \leq \sqrt{5}$.  
+In summary:  
+$\theta_{top} = \theta_2 - \theta_1 = \sin^{-1}(\frac{1 - x}{d}) - \cos^{-1}(\frac{2 - y}{d})$  
+$\max(0, 2 - d) \leq y \leq \min(1, 2 - d \sin(\cos^{-1}(\frac{1}{d})))$  
+$0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{2 - y}{d}))$  
+$1 \leq d \leq \sqrt{5}$  
+$P_2(d) = \frac{4}{\pi} \int_{\max(0, 2 - d)}^{\min(1, 2 - d \sin(\cos^{-1}(\frac{1}{d})))} \int_0^{1 - d \cos(\sin^{-1}(\frac{2 - y}{d}))} \left[\sin^{-1}(\frac{1 - x}{d}) - \cos^{-1}(\frac{2 - y}{d}) \right] dx dy$ for $1 \leq d \leq \sqrt{5}$  
