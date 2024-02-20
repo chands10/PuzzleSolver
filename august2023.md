@@ -15,7 +15,7 @@ And that when $1 \leq d \leq 2$ we have that $P(d) = (2 - d) - 0 = 2 - d$
 Finally when $d > 2$ $P(d)$ becomes negative which is not valid. In this case we should have $P(d) = 0$. We saw from our bounds $\max(0, 1 - d) \leq x \leq \min(1, 2 - d)$. When $d > 2$ this bound is not valid ($0 \leq x \leq 2 - d$).  
 Thus we have the same equations that we found above.
 # 2D
-This is an alternative method to the one posted on the Jane Street website from February 2020.  
+This is an alternative method to the one posted on the Jane Street website from [February 2020](https://www.janestreet.com/puzzles/single-cross-solution/).  
 $P(d) = \frac{\int_0^1 \int_0^1 P(x, y, d) dx dy}{\int_0^1 \int_0^1 dx dy} = \int_0^1 \int_0^1 P(x, y, d) dx dy$  
 We can restrict our search to $0 \leq d \leq \sqrt{5}$ because if $d > \sqrt{5}$ then it is impossible for $d$ to cross exactly one unit square. Similar to how in 1D we only considered line segments moving in the right direction because of symmetry reasons, in 2D we only need to consider line segments moving in the right direction or up direction. Thus we only need to consider the upper right quadrant of a circle as possible line segments that can be made.  
 $$P(x, y, d) = \frac{\text{arc length of valid positions in quarter circle}}{\text{circumference of quarter circle}}$$  
@@ -57,3 +57,20 @@ $\max(0, 2 - d) \leq y \leq \min(1, 2 - d \sin(\cos^{-1}(\frac{1}{d})))$
 $0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{2 - y}{d}))$  
 $1 \leq d \leq \sqrt{5}$  
 $P_2(d) = \frac{4}{\pi} \int_{\max(0, 2 - d)}^{\min(1, 2 - d \sin(\cos^{-1}(\frac{1}{d})))} \int_0^{1 - d \cos(\sin^{-1}(\frac{2 - y}{d}))} \left[\sin^{-1}(\frac{1 - x}{d}) - \cos^{-1}(\frac{2 - y}{d}) \right] dx dy$ for $1 \leq d \leq \sqrt{5}$  
+* Case 3: Arc intersects with $y = 1$  
+$\theta_{top}$ represents the angle from the top of the circle to the point at which the circle intersects $y = 1$. We can represent this by:  
+$y + d \sin(\frac{\pi}{2} - \theta_{top}) = 1$, $0 \leq x + d \cos(\frac{\pi}{2} - \theta_{top}) \leq 1$  
+These two equations mean that the circle will intersect $y = 1$ somewhere between $0 \leq x \leq 1$  
+We also have that $y + d \geq 1$ since the arc intersects with $y = 1$ as defined in our case  
+Rearranging $y + d \sin(\frac{\pi}{2} - \theta_{top}) = 1$ gets us that $\theta_{top} = \cos^{-1}(\frac{1 - y}{d})$  
+Note that this angle is only valid when $1 - y \leq d$, or rather $y + d \geq 1$ as expected. Thus $y \geq 1 - d$, and we have that $\max(0, 1 - d) \leq y \leq 1$  
+The $x$ constraint again gets us that $0 \leq x \leq 1 - d \cos(\frac{\pi}{2} - \theta_{top})$, and since $\theta_{top} = \cos^{-1}(\frac{1 - y}{d}) = \frac{\pi}{2} - \sin^{-1}(\frac{1 - y}{d})$, we have that $0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))$  
+Again, we also need to make sure that $0 \leq 1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))$. This happens when $y < 1 - d \sin(\cos^{-1}(\frac{1}{d}))$. Thus our updated $y$ bound is $\max(0, 1 - d) \leq y \leq \min(1, 1 - d \sin(\cos^{-1}(\frac{1}{d})))$.  
+**Note**: $\cos^{-1}(\frac{1}{d})$ is undefined when $d < 1$, so in this case $y = 1$ will be the upper bound. This is different from case 2, where $d < 1$ did not need to be considered.  
+Again we check the bounds for $d$. We need $1 - d \leq 1$, which is always true for a non-negative $d$. We also need $0 \leq 1 - d \sin(\cos^{-1}(\frac{1}{d}))$. This is true when $d \leq \sqrt{2}$. Thus we restrict case 3 to $0 \leq d \leq \sqrt{2}$.  
+In summary:  
+$\theta_{top} = \cos^{-1}(\frac{1 - y}{d})$  
+$\max(0, 1 - d) \leq y \leq \min(1, 1 - d \sin(\cos^{-1}(\frac{1}{d})))$ (with $y \leq 1$ when $d < 1$)  
+$0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))$  
+$1 \leq d \leq \sqrt{5}$  
+$P_3(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^{\min(1, 1 - d \sin(\cos^{-1}(\frac{1}{d})))} \int_0^{1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))} \cos^{-1}(\frac{1 - y}{d}) dx dy$ for $0 \leq d \leq \sqrt{2}$  
