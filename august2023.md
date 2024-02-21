@@ -80,3 +80,11 @@ Instead of computing the integrals and finding the derivatives, we can graphical
 We can see that in 2-space $P(d)$ is maximized at $d = 1$ with value 0.6366, or $\frac{2}{\pi}$  
 Here is a graph of the $x-y$ bounds that show which of the three functions is being used at each point, depending on the $d$ value. The colors of the functions match the same as the graph above:  
 ![Graph of x-y bounds](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d_bounds.gif)  
+# 3D
+This is an alternative solution that is a much more complex method than the [official solution](https://www.janestreet.com/puzzles/single-cross-2-solution/). Unfortunately I just really wanted to extend my 2D solution to 3D.  
+$P(d) = \frac{\int_0^1 \int_0^1 \int_0^1 P(x, y, z, d) dx dy dz}{\int_0^1 \int_0^1 \int_0^1 dx dy dz} = \int_0^1 \int_0^1 \int_0^1 P(x, y, z, d) dx dy dz$  
+We can restrict our search to $0 \leq d \leq \sqrt{6}$ because if $d > \sqrt{6}$ then it is impossible for $d$ to cross exactly one unit square. Similar to how in 1D we only considered line segments moving in the right direction because of symmetry reasons, in 3D we only need to consider line segments moving in each forward direction. Thus we only need to consider the octant of a sphere where $x, y, z > 0$ as possible line segments that can be made.  
+Similar to how we only considered $\theta_{top}$ in 2D, we only need to consider valid surface areas between $z = 1$ and $z = 2$, and can multiply by 3 because of symmetry reasons.  
+$$P(x, y, z, d) = \frac{\text{surface area of valid positions in octant}}{\text{surface area of octant}}$$  
+$`$` = \frac{3 \cdot \text{surface area of valid positions in octant between z = 1 and z = 2}}{4 \pi d^2 / 8}`$`$  
+$`$` = \frac{6}{\pi d^2} \cdot \text{surface area of valid positions in octant between z = 1 and z = 2}`$`$  
