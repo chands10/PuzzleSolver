@@ -75,7 +75,7 @@ $0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))$
 $1 \leq d \leq \sqrt{5}$  
 $P_3(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^{\min(1, 1 - d \sin(\cos^{-1}(\frac{1}{d})))} \int_0^{1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))} \cos^{-1}(\frac{1 - y}{d}) dx dy$ for $0 \leq d \leq \sqrt{2}$  
 Finally, we get that $P(d) = P_1(d) + P_2(d) + P_3(d)$  
-Graphically, we can find the value of $d$ that maximizes the probability that the endpoints of the segment lie in orthogonally adjacent unit cubes in 2-space:  
+Instead of computing the integrals and finding the derivatives, we can graphically find the value of $d$ that maximizes the probability that the endpoints of the segment lie in orthogonally adjacent unit cubes in 2-space:  
 ![Graph of 2d solns](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d.png)  
 We can see that in 2-space $P(d)$ is maximized at $d = 1$ with value 0.6366, or $\frac{2}{\pi}$  
 Here is a graph of the $x-y$ bounds that show which of the three functions is being used at each point, depending on the $d$ value. The colors of the functions match the same as the graph above:  
