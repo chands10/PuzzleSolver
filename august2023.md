@@ -74,6 +74,7 @@ $\max(0, 1 - d) \leq y \leq \min(1, 1 - d \sin(\cos^{-1}(\frac{1}{d})))$ (with $
 $0 \leq x \leq 1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))$  
 $1 \leq d \leq \sqrt{5}$  
 $P_3(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^{\min(1, 1 - d \sin(\cos^{-1}(\frac{1}{d})))} \int_0^{1 - d \cos(\sin^{-1}(\frac{1 - y}{d}))} \cos^{-1}(\frac{1 - y}{d}) dx dy$ for $0 \leq d \leq \sqrt{2}$  
+
 Finally, we get that $P(d) = P_1(d) + P_2(d) + P_3(d)$  
 Instead of computing the integrals and finding the derivatives, we can graphically find the value of $d$ that maximizes the probability that the endpoints of the segment lie in orthogonally adjacent unit cubes in 2-space:  
 ![Graph of 2d solns](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d.png)  
@@ -88,3 +89,5 @@ Similar to how we only considered $\theta_{top}$ in 2D, we only need to consider
 $$P(x, y, z, d) = \frac{\text{surface area of valid positions in octant}}{\text{surface area of octant}}$$  
 $`$` = \frac{3 \cdot \text{surface area of valid positions in octant between z = 1 and z = 2}}{4 \pi d^2 / 8}`$`$  
 $`$` = \frac{6}{\pi d^2} \cdot \text{surface area of valid positions in octant between z = 1 and z = 2}`$`$  
+From this point there are two ways to go about this. The first method involves adding up the cases where the octant doesn't intersect with either the $x$ or $y$ axes, intersects with only the $x$ axis (times two for symmetry with $y$ axis), and intersects with both axes, and all of these cases combined with starting with the base of the octant at $z = 1$ or above $z = 1$. Thus there are 6 cases.  
+The second method involves adding up the eighth spherical caps that intersect with $z = 1$ or above $z = 1$, and subtracting off the extraneous parts in both of these cases. Unfortunately two of these cases needed to be split up in two, so this method also results in 6 cases. Still, in more of the cases in the second method, the integration is simpler than in the first method, so this method will be used.  
