@@ -78,3 +78,5 @@ Finally, we get that $P(d) = P_1(d) + P_2(d) + P_3(d)$
 Graphically, we can find the value of $d$ that maximizes the probability that the endpoints of the segment lie in orthogonally adjacent unit cubes in 2-space:  
 ![Graph of 2d solns](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d.png)  
 We can see that in 2-space $P(d)$ is maximized at $d = 1$ with value 0.6366, or $\frac{2}{\pi}$  
+Here is a graph of the $x-y$ bounds that show which of the three functions is being used at each point, depending on the $d$ value. The colors of the functions match the same as the graph above:  
+![Graph of x-y bounds](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d_bounds.gif)  
