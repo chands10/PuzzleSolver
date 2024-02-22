@@ -108,3 +108,8 @@ We want $(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2 \geq 0$ so the squar
     $0 \leq y \leq 1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))$  
     $0 \leq x \leq 1$  
     $P_1(d) = \frac{6}{\pi d^2} \int_{1 - d}^1 \int_0^{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))} \int_0^1 \left[ \frac{1}{2} \pi d \left( z + d - 1 \right) \right] dx dy dz$  
+    * Subcase 2:  
+    Surface area and $z$ bounds same as subcase 1  
+    $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
+    $0 \leq x \leq 1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}$  
+    $P_{1.2}(d) = \frac{6}{\pi d^2} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_0^{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}} \left[ \frac{1}{2} \pi d \left( z + d - 1 \right) \right] dx dy dz$  
