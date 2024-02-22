@@ -89,5 +89,17 @@ Similar to how we only considered $\theta_{top}$ in 2D, we only need to consider
 $$P(x, y, z, d) = \frac{\text{surface area of valid positions in octant}}{\text{surface area of octant}}$$  
 $`$` = \frac{3 \cdot \text{surface area of valid positions in octant between z = 1 and z = 2}}{4 \pi d^2 / 8}`$`$  
 $`$` = \frac{6}{\pi d^2} \cdot \text{surface area of valid positions in octant between z = 1 and z = 2}`$`$  
+Actually we will restrict our search to $0 \leq d \leq 1$, since a simulation shows that this is where the maximal probability lies for 3D, and this simplifies things a lot.  
 From this point there are two ways to go about this. The first method involves adding up the cases where the octant doesn't intersect with either the $x$ or $y$ axes, intersects with only the $x$ axis (times two for symmetry with $y$ axis), and intersects with both axes, and all of these cases combined with starting with the base of the octant at $z = 1$ or above $z = 1$. Thus there are 6 cases.  
-The second method involves adding up the eighth spherical caps that intersect with $z = 1$ or above $z = 1$, and subtracting off the extraneous parts in both of these cases. Unfortunately two of these cases needed to be split up in two, so this method also results in 6 cases. Still, in more of the cases in the second method, the integration is simpler than in the first method, so this method will be used.  
+The second method involves adding up the eighth spherical caps that intersect with $z = 1$ or above $z = 1$, and subtracting off the extraneous parts in both of these cases. Unfortunately two of these cases needed to be split up in two, so this method also results in 6 cases. Still, in more of the cases in the second method, the integration is simpler than in the first method, since the surface area of a spherical cap is easy to compute, so this method will be used.  
+The surface area of a spherical cap is $2 \pi r h$. We only care about a quarter of this value ($\frac{1}{2} \pi r h$). We can use a spherical cap in this case since we restrict $d \leq 1$, thus the top of the spherical cap will always be included.
+* Case 1: The base of the spherical cap we care about touches $z = 1$. This case will be broken down into two subcases. First, we require that $z + d \geq 1$ since our spherical cap touches $z = 1$. Thus $1 - d \leq z \leq 1$.
+    * Subcase 1: $y + r \leq 1$, where $r$ is the radius of the circle at $z = 1$. So $0 \leq y \leq 1 - r$  
+    Note that the height of our circle at $z = 1$ is $1 - z$ ($z = 1$ is just referring to the axis, this is not our $z$ value in $1 - z$). In spherical coordinates, $height = 1 - z = d \cos(\phi)$, thus $\phi = \cos^{-1}(\frac{1 - z}{d})$. Our radius at $z = 1$ is $d \sin(\phi) = d \sin(\cos^{-1}(\frac{1 - z}{d}))$. Thus our $y$ bound in this case is $0 \leq y \leq 1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))$. $0 \leq x \leq 1$  
+    For our surface area $\frac{1}{2} \pi r h$, we have $r = d$ and $h = z + d - 1$ (since the top of the spherical cap will always be included).  
+    In summary:  
+    Surface area = $\frac{1}{2} \pi d (z + d - 1)$  
+    $1 - d \leq z \leq 1$  
+    $0 \leq y \leq 1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))$  
+    $0 \leq x \leq 1$  
+    $P_1(d) = \frac{6}{\pi d^2} \int_{1 - d}^1 \int_0^{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))} \int_0^1 \left[ \frac{1}{2} \pi d \left( z + d - 1 \right) \right] dx dy dz$  
