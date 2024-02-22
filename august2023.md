@@ -113,3 +113,15 @@ We want $(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2 \geq 0$ so the squar
     $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
     $0 \leq x \leq 1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}$  
     $P_{1.2}(d) = \frac{6}{\pi d^2} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_0^{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}} \left[ \frac{1}{2} \pi d \left( z + d - 1 \right) \right] dx dy dz$  
+* Case 2: The base of the spherical cap included in the probability will be at $1 < z \leq 2$.  
+We have the same bounds as case 1 subcase 2, except now that $1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2} \leq x \leq 1$ since we want the radius of the circle at $z = 1$ to be greater than the distance from $(x, y)$ to $(1, 1)$.  
+The base of the spherical cap occurs when $r = \sqrt{(x - 1)^2 + (y - 1)^2}$  
+Since $r = d \sin(\phi)$, we have that $\phi = \sin^{-1}(\frac{r}{d}) = \sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})$  
+The height of this circle relative to the center of the sphere in this case is $d \cos(\phi) = d \cos(\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2}))$  
+Thus the height of the spherical cap that we are interested in for our surface area is $d - d \cos(\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2}))$  
+In summary:  
+Surface area = $\frac{1}{2} \pi d (d - d \cos(\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})))$  
+$1 - d \leq z \leq 1$  
+$1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
+$1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2} \leq x \leq 1$  
+$P_2(d) = \frac{6}{\pi d^2} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}}^1 \left[ \frac{1}{2} \pi d \left( d - d \cos(\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})) \right) \right] dx dy dz$  
