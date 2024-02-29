@@ -125,3 +125,22 @@ $1 - d \leq z \leq 1$
 $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
 $1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2} \leq x \leq 1$  
 $P_2(d) = \frac{6}{\pi d^2} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}}^1 \left[ \frac{1}{2} \pi d \left( d - d \cos(\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})) \right) \right] dx dy dz$  
+
+For the next two cases we need to subtract off the parts of the quarter spherical caps we found in the first two cases that are not included in the cube found by $0 \leq x \leq 1$, $0 \leq y \leq 1$, $1 \leq z \leq 2$. We can do this by considering the equation for the surface area of a sphere $SA = \int_{\phi_1}^{\phi_2} \int_{\theta_1}^{\theta_2} \rho^2 \sin(\phi) d \theta d \phi = d^2 \int_{\phi_1}^{\phi_2} (\theta_2 - \theta_1) \sin(\phi) d \phi$  
+Since $x$ and $y$ have the same bounds in this case, we can use this symmetry to just subtract the portion of the spherical cap that goes past $x = 1$ and multiply by 2 to also account for the portion of the spherical cap that goes past $y = 1$. Thus our bound in these remaining cases will be that $x + r > 1$, or $x > 1 - r$, where here $r$ represents the radius of the circle found at $z = 1$. Thus $x > 1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))$  
+* Case 3:  
+Let $r = d \sin(\phi)$ represent the radius of the circle found at some $\phi$ value. For our surface area $SA(x, y, z, d)$, we want $\theta \geq 0$ and $x + r \cos(\theta) \geq 1$, which gives us $\theta \leq \cos^{-1}(\frac{1 - x}{r}) = \cos^{-1}(\frac{1 - x}{d \sin(\phi)})$. Thus $0 \leq \theta \leq \cos^{-1}(\frac{1 - x}{d \sin(\phi)})$  
+For $\cos^{-1}(\frac{1 - x}{d \sin(\phi)})$ to be defined we also need $1 - x \leq d \sin(\phi)$. This is just saying that $x + r \geq 1$. This gives us that $\phi \geq \sin^{-1}(\frac{1 - x}{d})$. Also this requires that $1 - x \leq d$, but if $x + r \geq 1$ then it must be the case that $x + d \geq 1$ so we don't need to add any bounds for this. We also want $z + d \cos(\phi) \geq 1$, which gives us that $\phi \leq \cos^{-1}(\frac{1 - z}{d})$. Thus $\sin^{-1}(\frac{1 - x}{d}) \leq \phi \leq \cos^{-1}(\frac{1 - z}{d})$  
+So $SA(x, y, z, d) = d^2 \int_{\sin^{-1}(\frac{1 - x}{d})}^{\cos^{-1}(\frac{1 - z}{d})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi$    
+$P_3(d) = -2 \cdot \frac{6}{\pi d^2} \int \int \int SA(x, y, z, d) dV$  
+$= -\frac{12}{\pi} \int \int \int \int_{\sin^{-1}(\frac{1 - x}{d})}^{\cos^{-1}(\frac{1 - z}{d})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi dV$  
+    * Subcase 1: This mirrors subcase 1 from above with a stricter $x$ bound  
+    $1 - d \leq z \leq 1$  
+    $0 \leq y \leq 1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))$  
+    $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq x \leq 1$  
+    $P_3(d) = -\frac{12}{\pi} \int_{1 - d}^1 \int_0^{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))} \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{\sin^{-1}(\frac{1 - x}{d})}^{\cos^{-1}(\frac{1 - z}{d})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi dx dy dz$  
+    * Subcase 2: This mirrors subcase 2 from above with a stricter $x$ bound  
+    $1 - d \leq z \leq 1$  
+    $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
+    $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq x \leq 1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}$  
+    $P_{3.2}(d) = -\frac{12}{\pi} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}} \int_{\sin^{-1}(\frac{1 - x}{d})}^{\cos^{-1}(\frac{1 - z}{d})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi dx dy dz$
