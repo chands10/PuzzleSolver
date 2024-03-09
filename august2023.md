@@ -156,3 +156,7 @@ $1 - d \leq z \leq 1$
 $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
 $1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2} \leq x \leq 1$  
 $P_4(d) = -\frac{12}{\pi} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}}^1 \int_{\sin^{-1}(\frac{1 - x}{d})}^{\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi dx dy dz$  
+
+FINALLY, $P(d) = P_1(d) + P_{1.2}(d) + P_2(d) + P_3(d) + P_{3.2}(d) + P_4(d)$  
+Unfortunately, when I tried to have Python calculate this for $0 \leq d \leq 1$, floating point errors resulted in arccos or arcsin having a very very slightly higher numerator than denominator for some values of $x$, $y$, $z$, $d$, which resulted in undefined values being returned. Thus, as you too have done by reading this far, I wasted a lot of time on this.  
+Q. E. D.
