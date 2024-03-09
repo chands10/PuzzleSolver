@@ -144,3 +144,15 @@ $= -\frac{12}{\pi} \int \int \int \int_{\sin^{-1}(\frac{1 - x}{d})}^{\cos^{-1}(\
     $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
     $1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq x \leq 1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}$  
     $P_{3.2}(d) = -\frac{12}{\pi} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}} \int_{\sin^{-1}(\frac{1 - x}{d})}^{\cos^{-1}(\frac{1 - z}{d})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi dx dy dz$
+* Case 4: This case mirrors case 2.  
+Recall from case 2 that the base of the spherical cap occurs at $\phi = \sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})$  
+This will act as our upper bound for $\phi$ in our equation for surface area. Thus our new $\phi$ bound is $\sin^{-1}(\frac{1 - x}{d}) \leq \phi \leq \sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})$  
+Note it can be shown that this lower bound is strictly less than this upper bound (for non-negative values at least). The remainder of the surface area equation from case 3 remains unchanged.  
+Thus $SA(x, y, z, d) = d^2 \int_{\sin^{-1}(\frac{1 - x}{d})}^{\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi$  
+The $x$, $y$, $z$ bounds will exactly the same as case 2, since case 2's lower $x$ bound is already stricter than (greater than or equal to) the new lower $x$ bound we found for these last two cases.  
+Meaning that $1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2} \geq 1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))$  
+Thus  
+$1 - d \leq z \leq 1$  
+$1 - d \sin(\cos^{-1}(\frac{1 - z}{d})) \leq y \leq 1$  
+$1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2} \leq x \leq 1$  
+$P_4(d) = -\frac{12}{\pi} \int_{1 - d}^1 \int_{1 - d \sin(\cos^{-1}(\frac{1 - z}{d}))}^1 \int_{1 - \sqrt{(d \sin(\cos^{-1}(\frac{1 - z}{d})))^2 - (y - 1)^2}}^1 \int_{\sin^{-1}(\frac{1 - x}{d})}^{\sin^{-1}(\frac{1}{d} \sqrt{(x - 1)^2 + (y - 1)^2})} \cos^{-1}(\frac{1 - x}{d \sin(\phi)}) \sin(\phi) d \phi dx dy dz$  
