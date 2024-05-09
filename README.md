@@ -5,3 +5,6 @@
 * April 2023 Solution: Uses an early stopping graph search and combinatorics to solve the enumeration problem found at https://www.janestreet.com/puzzles/arc-edge-acreage-index/
 * August 2023 Solution: Explanation [here](august2023.md) https://www.janestreet.com/puzzles/single-cross-2-index/
 ![Graph of x-y bounds](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d_bounds.gif)  
+* April 2024 Solution: https://www.janestreet.com/puzzles/robot-capture-the-flag-index/
+<a href="url"><img src="https://raw.githubusercontent.com/chands10/PuzzleSolver/main/april2024_theta_0_prob.gif" align="left" height=50% width=50% ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/chands10/PuzzleSolver/main/april2024_theta_rand_prob.gif" align="left" height=50% width=50% ></a>
