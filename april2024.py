@@ -200,7 +200,7 @@ def boundsGraphOld(e, fig):
 
 
 if __name__ == "__main__":
-    if 1:
+    if 0:
         idx = 0
         accuracy = 300
         use_theta_0 = True
@@ -211,9 +211,11 @@ if __name__ == "__main__":
         fig.canvas.mpl_connect('button_press_event', lambda event: onclick(fig))
         plt.show()
     
-    if 0:
+    if 1:
         x = np.linspace(0, 1)
         y = np.array([P(e) for e in x])
+        plt.xlabel("e")
+        plt.ylabel("P(e)")
         plt.plot(x, y)
         
         #y2 = np.array([P2(e) for e in x])
@@ -230,7 +232,7 @@ if __name__ == "__main__":
     pprint(sol)
     print(P_extra(sol[0][0]))
     
-    if 0:
+    if 1:
         plt.scatter(sol[0][0], sol[1])
     
     if 0:
