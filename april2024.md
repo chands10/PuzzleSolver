@@ -17,7 +17,13 @@ P(\text{Aaron winning}) = \frac{\frac{1}{2} \pi (\frac{e}{2})^2 + \int_{\frac{e}
 P(\text{Aaron winning}) = (\frac{e}{2})^2 + \frac{2}{\pi} \int_{\frac{e}{2}}^1 r \arccos(\frac{\sqrt{2er - e^2}}{r}) dr
 \end{gather}
 ```
-At this point my solution becomes pretty identical to the [official solution](https://www.janestreet.com/puzzles/robot-capture-the-flag-solution/). If you use $\sin(\arccos(x)) = \sqrt{1 - x^2}$ you can get that $\arccos(\frac{\sqrt{2er - e^2}}{r}) = \arcsin(\frac{|r - e|}{r})$ which is the formula used in the official solution.  
+At this point my solution becomes pretty identical to the [official solution](https://www.janestreet.com/puzzles/robot-capture-the-flag-solution/). If you use $\sin(\arccos(x)) = \sqrt{1 - x^2}$ you can get that $\arccos(\frac{\sqrt{2er - e^2}}{r}) = \arcsin(\frac{|r - e|}{r})$ which is the formula used in the official solution. I did not think to draw the triangle in the official solution which would have gotten me this equation quicker.  
+
 With Erin knowing that $P(e) = (\frac{e}{2})^2 + \frac{2}{\pi} \int_{\frac{e}{2}}^1 r \arccos(\frac{\sqrt{2er - e^2}}{r}) dr$ she will try to choose a value of $e$ that minimizes the value of this equation.  
 ![Graph of P(e)](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/april2024_prob.png)  
-Since this graph is simple enough, we can just use scipy to find the minimum instead of taking the integral with respect to $r$ and derivative with respect to $e$. This gets us that the minimum value of $e$ occurs at $e \approx 0.5013069457$ with $P(e) \approx 0.1661864864$
+Since this graph is simple enough, we can just use scipy to find the minimum instead of taking the integral with respect to $r$ and derivative with respect to $e$. This gets us that the minimum value of $e$ occurs at $e \approx 0.5013069457$ with $P(e) \approx 0.1661864864$  
+
+Below are graphs at different values of $e$ showing what the result would be with the flag placed at every point in the circle. The graph on the left has Aaron choosing polar coordinate (a, 0), and the graph on the right has Aaron choosing a random value for $\theta$. Both should result in the same winning percentage. Aaron wins at the blue points and loses at the red points. He chooses $a = 0$ at the lighter shades of blue and $a = \sqrt{2er - e^2}$ otherwise.
+
+<a href="url"><img src="https://raw.githubusercontent.com/chands10/PuzzleSolver/main/april2024_theta_0_prob.gif" align="left" height=50% width=50% ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/chands10/PuzzleSolver/main/april2024_theta_rand_prob.gif" align="left" height=50% width=50% ></a>
