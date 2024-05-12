@@ -77,10 +77,10 @@ $P_3(d) = \frac{4}{\pi} \int_{\max(0, 1 - d)}^{\min(1, 1 - d \sin(\cos^{-1}(\fra
 
 Finally, we get that $P(d) = P_1(d) + P_2(d) + P_3(d)$  
 Instead of computing the integrals and finding the derivatives, we can graphically find the value of $d$ that maximizes the probability that the endpoints of the segment lie in orthogonally adjacent unit cubes in 2-space:  
-![Graph of 2d solns](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d.png)  
+![Graph of 2d solns](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023/august2023_2d.png)  
 We can see that in 2-space $P(d)$ is maximized at $d = 1$ with value 0.6366, or $\frac{2}{\pi}$  
 Here is a graph of the $x-y$ bounds that show which of the three functions is being used at each point, depending on the $d$ value. The colors of the functions match the same as the graph above:  
-![Graph of x-y bounds](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023_2d_bounds.gif)  
+![Graph of x-y bounds](https://raw.githubusercontent.com/chands10/PuzzleSolver/main/august2023/august2023_2d_bounds.gif)  
 # 3D
 This is an alternative solution that is a much more complex method than the [official solution](https://www.janestreet.com/puzzles/single-cross-2-solution/). Unfortunately I just really wanted to extend my 2D solution to 3D.  
 $P(d) = \frac{\int_0^1 \int_0^1 \int_0^1 P(x, y, z, d) dx dy dz}{\int_0^1 \int_0^1 \int_0^1 dx dy dz} = \int_0^1 \int_0^1 \int_0^1 P(x, y, z, d) dx dy dz$  
