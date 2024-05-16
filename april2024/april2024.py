@@ -116,6 +116,53 @@ def onclick(fig):
     boundsGraph(E[idx], fig)
     plt.draw()
 
+def circleGraph(r, fig):
+    ax = fig.add_subplot(111)
+    ax.set_xlim((-1, 1))
+    ax.set_ylim((-1, 1))       
+    
+    circle1 = plt.Circle((0, 0), 1, color="black", fill=False)        
+    ax.add_patch(circle1)
+
+    e = 0.5013069457869279
+    ax.scatter(e, 0, color="orange")
+    ax.scatter(r, 0, color="red")
+    ax.scatter(0, 0, color="black")
+            
+    circle2 = plt.Circle((r, 0), abs(r - e), color="red", fill=False)
+    ax.add_patch(circle2)
+
+    x = np.linspace(0, r)
+    plt.plot(x, np.zeros_like(x), color="black")    
+    a = 0
+    theta = np.pi
+    if r >= e / 2:
+        a = np.sqrt(2 * e * r - e**2)
+        theta = np.arccos(a / r)
+        circle3 = plt.Circle((0, 0), a, color="blue", fill=False)
+        ax.add_patch(circle3)
+        
+        intersection = ((2 * e * r - e**2) / r, a * abs(r - e) / r)
+        ax.scatter(intersection[0], intersection[1], color="blue")
+        
+        plt.plot(x, x * abs(r - e) / a, color="blue")
+    rString = r"$r < \frac{e}{2}$" if r < e / 2 else r"$r \geq \frac{e}{2}$"
+    thetaString = r"$\theta = $"
+    degreeString = r"$\degree$"
+    fig.suptitle(f"r = {r:.2f}, a = {a:.2f}, {thetaString}{theta * 180 / np.pi:.2f}{degreeString}, P = {theta / np.pi:.5f} e = {e:.2f}, {rString}")
+    plt.draw()
+    
+    
+def onclick2(fig):
+    global R
+    global idx
+    fig.clear()
+    idx += 1
+    if idx >= R.size:
+        idx = 0
+    circleGraph(R[idx], fig)
+    plt.draw()
+
 """
 Old functions assumed that Aaron chose (r, 0)
 """
@@ -200,6 +247,7 @@ def boundsGraphOld(e, fig):
 
 
 if __name__ == "__main__":
+    # bounds graph
     if 0:
         idx = 0
         accuracy = 300
@@ -211,7 +259,8 @@ if __name__ == "__main__":
         fig.canvas.mpl_connect('button_press_event', lambda event: onclick(fig))
         plt.show()
     
-    if 1:
+    # probability graph
+    if 0:
         x = np.linspace(0, 1)
         y = np.array([P(e) for e in x])
         plt.xlabel("e")
@@ -232,9 +281,10 @@ if __name__ == "__main__":
     pprint(sol)
     print(P_extra(sol[0][0]))
     
-    if 1:
+    if 0:
         plt.scatter(sol[0][0], sol[1])
     
+    # use Pgrid
     if 0:
         s = fmin(Pgrid, np.array([.5]), xtol=1e-12, ftol=1e-12, full_output=True)
         pprint(s)
@@ -291,3 +341,12 @@ if __name__ == "__main__":
                 low = mid
             else:
                 high = mid
+                
+    # circle graph
+    if 1:
+        idx = 0
+        R = np.arange(0, 1.1, .1)
+        fig = plt.figure()
+        circleGraph(R[idx], fig)
+        fig.canvas.mpl_connect('button_press_event', lambda event: onclick2(fig))
+        plt.show()        
